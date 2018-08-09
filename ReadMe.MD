@@ -275,6 +275,10 @@ Beta
 This shows us that the script received two arguments, as expected.  The process exited gracefully, and there were no exceptions.
 
 
+## Contact
+
+Questions, feedback and abuse can be sent to steve at continuum dot je.
+
 
 ## Credit
 
@@ -283,7 +287,9 @@ Most of the serious code that spawns the process and ensures it does not deadloc
 
 ## License
 
+The code from Roger Knapp is provided under Apache License 2.0 .  This license allows the use of code for commercial purposes, provided the code makes no attempt to represent the Apache Foundation or Apache products.
 
+This product is therefore the private commercial intellectual property of Continuum Jersey.
 
 
 ## Update History
