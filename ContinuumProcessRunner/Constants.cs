@@ -21,7 +21,7 @@ namespace ContinuumProcessRunner
         public static string DEFAULTRETCODEFIELD = "ProcessRunnerReturnCode";
         public static string DEFAULTEXCEPTIONFIELD = "ProcessRunnerException";
 
-        public static int LARGEOUTPUTFIELDSIZE = 65535;
+        public static int LARGEOUTPUTFIELDSIZE = Int32.MaxValue;
         public static int SMALLOUTPUTFIELDSIZE = 512;
     }
 }
