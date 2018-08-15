@@ -48,7 +48,7 @@ This tool avoids the problem by using asynchronous events to listen to the outpu
 
 The input parameters are passed as command line arguments to the executable, in Alteryx column order, as Strings.  All columns are passed.
 
-The output and error columns are currently sized at 65535 characters, and the return code is a generous 512 characters.
+The output and error columns are currently sized at 1073741823 characters (Int32.MaxValue bytes, 2 bytes per char), and the return code is a generous 256 characters, considering that the code should be a single numeric digit.
 
 
 
@@ -295,3 +295,5 @@ This product is therefore the private commercial intellectual property of Contin
 ## Update History
 
 ### v1.0.0 Alpha Release
+
+### v1.0.1 Beta; Max field size for StdOut and Exception output fields increased from 65535 to 
