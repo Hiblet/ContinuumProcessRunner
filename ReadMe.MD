@@ -160,7 +160,7 @@ Number of arguments:  3
 The arguments are:  ['C:/MyScripts/Test1.py', 'Steve', '50']
 ```
 
-This tells us that the Python executable successfully fired up the script as the first argument.  This worked, because the ScriptPath column was the first column that in the data that was not the Executable.
+This tells us that the Python executable successfully fired up the script as the first argument.  This worked, because the ScriptPath column was the first column in the record that was not the Executable.
 
 The script ran and reported the passed in script name (argv[0]), and the number of variables received, and the actual variables received on the command line.
 The three print statements in the script resulted in 3 separate lines in the output data cell.
@@ -294,6 +294,8 @@ This product is therefore the private commercial intellectual property of Contin
 
 ## Update History
 
-### v1.0.0 Alpha Release
+#### v1.0.0 
+Alpha Release
 
-### v1.0.1 Beta; Max field size for StdOut and Exception output fields increased from 65535 to 
+#### v1.0.1
+Beta; Max field size for StdOut and Exception output fields increased from 65535 to 2Gb, allowing 1 billion 2-byte chars.
