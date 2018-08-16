@@ -1,0 +1,1 @@
+get-eventlog -logname "Application" -newest 100 | convertto-csv

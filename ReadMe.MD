@@ -299,3 +299,6 @@ Alpha Release
 
 #### v1.0.1
 Beta; Max field size for StdOut and Exception output fields increased from 65535 to 2Gb, allowing 1 billion 2-byte chars.
+
+#### v1.0.2
+Beta; Use StringBuilder to build output to improve high-load performance.  Prior to this change, 10000 records output took 33.7 secs, after this change, 8.9 secs.  Vrrroooom.
