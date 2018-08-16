@@ -30,11 +30,13 @@ namespace ContinuumProcessRunner
         private string _retCodeField = Constants.DEFAULTRETCODEFIELD;
         private string _exceptionsField = Constants.DEFAULTEXCEPTIONFIELD;
 
-        private string _stdOut = "";
         private string _retCode = "";
         private string _exceptions = "";
-        
-        
+
+        private StringBuilder _sbStdOut = new StringBuilder();
+        private string _sbStdOutLock = "sbStdOutLock"; // Multi-threading lock for StringBuilder object
+
+
 
 
 
@@ -122,9 +124,12 @@ namespace ContinuumProcessRunner
             prepRecordInfoOut();
 
             // The same object is used in each call, so reset the result fields before using them.
-            _stdOut = "";
             _retCode = "";
             _exceptions = "";
+            lock (_sbStdOutLock)
+            {
+                _sbStdOut.Clear();
+            }
 
 
             // Check the paths to Executable and Script...
@@ -134,7 +139,12 @@ namespace ContinuumProcessRunner
             // Do the magic
             shell(exePath, getArguments(recordDataIn));
 
-
+            // Get the output
+            string stdOut = "";
+            lock (_sbStdOutLock)
+            {
+                stdOut = _sbStdOut.ToString();
+            }
 
 
 
@@ -151,7 +161,7 @@ namespace ContinuumProcessRunner
             var numInputFields = (int)_recordInfoIn.NumFields();
 
             AlteryxRecordInfoNet.FieldBase fbStdOut = _recordInfoOut[numInputFields];
-            fbStdOut.SetFromString(recordOut, _stdOut);
+            fbStdOut.SetFromString(recordOut, stdOut);
 
             AlteryxRecordInfoNet.FieldBase fbRetCode = _recordInfoOut[numInputFields + 1];
             fbRetCode.SetFromString(recordOut, _retCode);
@@ -159,7 +169,14 @@ namespace ContinuumProcessRunner
             AlteryxRecordInfoNet.FieldBase fbExceptions = _recordInfoOut[numInputFields + 2];
             fbExceptions.SetFromString(recordOut, _exceptions);
 
-            _outputHelper.PushRecord(recordOut.GetRecord());            
+            _outputHelper.PushRecord(recordOut.GetRecord());
+
+
+            // Clear the accumulated strings for next record
+            lock (_sbStdOutLock)
+            {
+                _sbStdOut.Clear();
+            }
 
             return true;
         }
@@ -303,7 +320,6 @@ namespace ContinuumProcessRunner
         private List<string> getArguments(RecordData recordDataIn)
         {
             List<string> items = new List<string>();
-            string item = "";
 
             // loop through the inbound records, build a string
             uint countFields = _recordInfoIn.NumFields();
@@ -339,7 +355,6 @@ namespace ContinuumProcessRunner
             CSharpTest.Net.Processes.ProcessRunner procRunner = new CSharpTest.Net.Processes.ProcessRunner(exePath, args.ToArray());
             procRunner.OutputReceived += new ProcessOutputEventHandler(run_OutputReceived);
             _retCode = procRunner.Run().ToString();
-
         }
 
 
@@ -349,10 +364,10 @@ namespace ContinuumProcessRunner
                 _exceptions = args.Data;
             else
             {
-                if (string.IsNullOrEmpty(_stdOut))
-                    _stdOut += args.Data;
-                else
-                    _stdOut = _stdOut + Environment.NewLine + args.Data;
+                lock (_sbStdOutLock)
+                {
+                    _sbStdOut.AppendLine(args.Data);
+                }
             }
         }
 
