@@ -101,7 +101,14 @@ namespace CSharpTest.Net.Processes
 		public TextWriter StandardInput { get { return Check.NotNull(_stdIn); } }
 
 		/// <summary> Gets or sets the initial working directory for the process. </summary>
-		public string WorkingDirectory { get { return _workingDir ?? Environment.CurrentDirectory; } set { _workingDir = value; } }
+		public string WorkingDirectory
+        {
+            // REPLACED: Current Directory might be Admin restricted
+            //get { return _workingDir ?? Environment.CurrentDirectory; }
+
+            get { return _workingDir ?? Environment.GetFolderPath(Environment.SpecialFolder.Personal); }
+            set { _workingDir = value; }
+        }
 
 			/// <summary> Waits for the process to exit and returns the exit code </summary>
 		public int ExitCode { get { WaitForExit(); return _exitCode; } }

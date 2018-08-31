@@ -302,3 +302,8 @@ Beta; Max field size for StdOut and Exception output fields increased from 65535
 
 #### v1.0.2
 Beta; Use StringBuilder to build output to improve high-load performance.  Prior to this change, 10000 records output took 33.7 secs, after this change, 8.9 secs.  Vrrroooom.
+
+#### v1.0.3
+Beta; Default working directory for the spawned process changed from this.WorkingDirectory to Environment.SpecialFolder.Personal .
+The previous working directory would be wherever the DLL ran from, which could be Admin restricted.
+The new working directory is the users MyDocuments folder, which the user should have full rights to.
