@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<AlteryxDocument yxmdVer="2018.2">
+<AlteryxDocument yxmdVer="2018.3">
   <Nodes>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
@@ -16,31 +16,31 @@
           </Fields>
           <Data>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37/python.exe</c>
+              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
               <c>C:/users/user/documents/python/testscriptargs.py</c>
               <c>49</c>
               <c>Steve</c>
             </r>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37/python.exe</c>
+              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
               <c>C:/users/user/documents/python/testscriptexcpts.py</c>
               <c>50</c>
               <c>Rors</c>
             </r>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37/python.exe</c>
+              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
               <c>C:/users/user/documents/python/testscriptlong.py</c>
               <c>51</c>
               <c>Craig</c>
             </r>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37/python.exe</c>
+              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
               <c>C:/users/user/documents/python/testscriptargs.py</c>
               <c>52</c>
               <c>Steve Hibbert</c>
             </r>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37/python.exe</c>
+              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
               <c>C:/users/user/documents/python/testscriptargs.py</c>
               <c>53</c>
               <c>"Steve Hibbert"</c>
@@ -73,7 +73,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_16276_6e7aee8b52df4fef8312f3e65f84b531_\Engine_20348_97da0ebeecb741b49537cbf899ce36b0_.yxdb</TempFile>
+          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_17468_feefbe2595b2456b8379d8a6c83af1c3_\Engine_13700_ff5f8c30c6684750a47bf9db81e14394_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>

@@ -143,7 +143,7 @@
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>ProcessRunnerTest</Name>
+      <Name>ProcessRunnerTest_Simple</Name>
       <Description />
       <RootToolName />
       <ToolVersion />
