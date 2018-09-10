@@ -307,3 +307,7 @@ Beta; Use StringBuilder to build output to improve high-load performance.  Prior
 Beta; Default working directory for the spawned process changed from this.WorkingDirectory to Environment.SpecialFolder.Personal .
 The previous working directory would be wherever the DLL ran from, which could be Admin restricted.
 The new working directory is the users MyDocuments folder, which the user should have full rights to.
+
+#### v1.0.4
+Beta; Use StringBuilder to build exceptions string, similar to change from v1.0.1 to v1.0.2
+

@@ -72,7 +72,7 @@
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(38, 12);
             this.labelVersion.TabIndex = 1;
-            this.labelVersion.Text = "(v1.0.3)";
+            this.labelVersion.Text = "(v1.0.4)";
             // 
             // labelHeader
             // 
