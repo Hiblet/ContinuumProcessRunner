@@ -30,12 +30,13 @@ namespace ContinuumProcessRunner
         private string _retCodeField = Constants.DEFAULTRETCODEFIELD;
         private string _exceptionsField = Constants.DEFAULTEXCEPTIONFIELD;
 
-        private string _retCode = "";
-        private string _exceptions = "";
+        private string _retCode = "";        
 
         private StringBuilder _sbStdOut = new StringBuilder();
         private string _sbStdOutLock = "sbStdOutLock"; // Multi-threading lock for StringBuilder object
 
+        private StringBuilder _sbExceptions = new StringBuilder();
+        private string _sbExceptionsLock = "sbExceptionsLock"; // Lock object
 
 
 
@@ -125,11 +126,8 @@ namespace ContinuumProcessRunner
 
             // The same object is used in each call, so reset the result fields before using them.
             _retCode = "";
-            _exceptions = "";
-            lock (_sbStdOutLock)
-            {
-                _sbStdOut.Clear();
-            }
+            lock (_sbStdOutLock) { _sbStdOut.Clear(); }
+            lock (_sbExceptionsLock) { _sbExceptions.Clear(); }
 
 
             // Check the paths to Executable and Script...
@@ -142,11 +140,12 @@ namespace ContinuumProcessRunner
             // Get the output
             string stdOut = "";
             lock (_sbStdOutLock)
-            {
-                stdOut = _sbStdOut.ToString();
-            }
+            { stdOut = _sbStdOut.ToString(); }
 
-
+            // Get the exceptions
+            string exceptions = "";
+            lock (_sbExceptionsLock)
+            { exceptions = _sbExceptions.ToString(); }
 
 
             // Prepare the output
@@ -167,16 +166,14 @@ namespace ContinuumProcessRunner
             fbRetCode.SetFromString(recordOut, _retCode);
 
             AlteryxRecordInfoNet.FieldBase fbExceptions = _recordInfoOut[numInputFields + 2];
-            fbExceptions.SetFromString(recordOut, _exceptions);
+            fbExceptions.SetFromString(recordOut, exceptions);
 
             _outputHelper.PushRecord(recordOut.GetRecord());
 
 
             // Clear the accumulated strings for next record
-            lock (_sbStdOutLock)
-            {
-                _sbStdOut.Clear();
-            }
+            lock (_sbStdOutLock) { _sbStdOut.Clear(); }
+            lock (_sbExceptionsLock) { _sbExceptions.Clear(); }
 
             return true;
         }
@@ -361,14 +358,9 @@ namespace ContinuumProcessRunner
         private void run_OutputReceived(object sender, ProcessOutputEventArgs args)
         {
             if (args.Error)
-                _exceptions = args.Data;
+                lock (_sbExceptionsLock) { _sbExceptions.AppendLine(args.Data); }            
             else
-            {
-                lock (_sbStdOutLock)
-                {
-                    _sbStdOut.AppendLine(args.Data);
-                }
-            }
+                lock (_sbStdOutLock) { _sbStdOut.AppendLine(args.Data); }            
         }
 
     }
