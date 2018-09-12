@@ -9,11 +9,15 @@ namespace ContinuumProcessRunner
 {
     public class XmlInputConfiguration
     {
+        // Fields
         public string ExePathField { get; private set; }
         public string StdOutField { get; private set; }
         public string RetCodeField { get; private set; }
         public string ExceptionField { get; private set; }
 
+        // Switches (Y/N)
+        public string Diags { get; private set; }
+        public string AutoEscape { get; private set; }
 
 
 
@@ -22,12 +26,16 @@ namespace ContinuumProcessRunner
             string exePathField,
             string stdOutField,
             string retCodeField,
-            string exceptionField)
+            string exceptionField,
+            string diags,
+            string autoEscape)
         {
             ExePathField = exePathField;
             StdOutField = stdOutField;
             RetCodeField = retCodeField;
             ExceptionField = exceptionField;
+            Diags = diags;
+            AutoEscape = autoEscape;
         }
 
         public static string getStringFromConfig(XmlElement eConfig, string key, string valueDefault)
@@ -51,11 +59,16 @@ namespace ContinuumProcessRunner
             string retCodeField = getStringFromConfig(eConfig, Constants.RETCODEFIELDKEY, Constants.DEFAULTRETCODEFIELD);
             string exceptionField = getStringFromConfig(eConfig, Constants.EXCEPTIONFIELDKEY, Constants.DEFAULTEXCEPTIONFIELD);
 
+            string diags = getStringFromConfig(eConfig, Constants.DIAGSKEY, Constants.DEFAULTDIAGS);
+            string autoEscape = getStringFromConfig(eConfig, Constants.AUTOESCAPEKEY, Constants.DEFAULTAUTOESCAPE);
+
             return new XmlInputConfiguration(
                 exePathField, 
                 stdOutField, 
                 retCodeField, 
-                exceptionField);
+                exceptionField,
+                diags,
+                autoEscape);
         }
 
         // Property Name Accessor

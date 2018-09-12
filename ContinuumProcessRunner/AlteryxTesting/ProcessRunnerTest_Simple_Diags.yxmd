@@ -73,7 +73,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_17468_feefbe2595b2456b8379d8a6c83af1c3_\Engine_13700_ff5f8c30c6684750a47bf9db81e14394_.yxdb</TempFile>
+          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_4984_6eca35308e8f4ddd87ad4d9e9c329555_\Engine_5132_ead7884c9a2d46d9a5aa00bb4023bd99_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -143,7 +143,7 @@
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>ProcessRunnerTest_Simple</Name>
+      <Name>ProcessRunnerTest_Simple_Diags</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

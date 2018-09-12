@@ -29,7 +29,11 @@ namespace ContinuumProcessRunner
         private string _stdOutField = Constants.DEFAULTSTDOUTFIELD;
         private string _retCodeField = Constants.DEFAULTRETCODEFIELD;
         private string _exceptionsField = Constants.DEFAULTEXCEPTIONFIELD;
+        private string _diagsField = Constants.DEFAULTDIAGSFIELD;
 
+        private string _cmdLine = "";
+        private string _diags = "N";
+        private string _autoEscape = "Y";
         private string _retCode = "";        
 
         private StringBuilder _sbStdOut = new StringBuilder();
@@ -57,6 +61,9 @@ namespace ContinuumProcessRunner
                 getConfigSetting(configElement, Constants.STDOUTFIELDKEY, ref _stdOutField);
                 getConfigSetting(configElement, Constants.RETCODEFIELDKEY, ref _retCodeField);
                 getConfigSetting(configElement, Constants.EXCEPTIONFIELDKEY, ref _exceptionsField);
+
+                getConfigSetting(configElement, Constants.DIAGSKEY, ref _diags);
+                getConfigSetting(configElement, Constants.AUTOESCAPEKEY, ref _autoEscape);
             }
 
             _outputHelper = new AlteryxRecordInfoNet.PluginOutputConnectionHelper(_toolID, _engineInterface);
@@ -126,8 +133,10 @@ namespace ContinuumProcessRunner
 
             // The same object is used in each call, so reset the result fields before using them.
             _retCode = "";
+            _cmdLine = "";
             lock (_sbStdOutLock) { _sbStdOut.Clear(); }
             lock (_sbExceptionsLock) { _sbExceptions.Clear(); }
+
 
 
             // Check the paths to Executable and Script...
@@ -168,10 +177,19 @@ namespace ContinuumProcessRunner
             AlteryxRecordInfoNet.FieldBase fbExceptions = _recordInfoOut[numInputFields + 2];
             fbExceptions.SetFromString(recordOut, exceptions);
 
+            if (isTrueString(_diags))
+            {
+                AlteryxRecordInfoNet.FieldBase fbDiags = _recordInfoOut[numInputFields + 3];
+                fbDiags.SetFromString(recordOut, _cmdLine);
+            }
+
+            // Output
             _outputHelper.PushRecord(recordOut.GetRecord());
 
 
             // Clear the accumulated strings for next record
+            _retCode = "";
+            _cmdLine = "";
             lock (_sbStdOutLock) { _sbStdOut.Clear(); }
             lock (_sbExceptionsLock) { _sbExceptions.Clear(); }
 
@@ -222,6 +240,9 @@ namespace ContinuumProcessRunner
             _recordInfoOut.AddField(_stdOutField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");
             _recordInfoOut.AddField(_retCodeField, FieldType.E_FT_V_WString, Constants.SMALLOUTPUTFIELDSIZE, 0, "", "");
             _recordInfoOut.AddField(_exceptionsField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");
+
+            if (isTrueString(_diags))            
+                _recordInfoOut.AddField(_diagsField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");            
         }
 
         private void copyRecordData(RecordData recordDataIn, Record recordOut)
@@ -349,7 +370,11 @@ namespace ContinuumProcessRunner
 
         private void shell(string exePath, List<string> args)
         {
-            CSharpTest.Net.Processes.ProcessRunner procRunner = new CSharpTest.Net.Processes.ProcessRunner(exePath, args.ToArray());
+            CSharpTest.Net.Processes.ProcessRunner procRunner = 
+                new CSharpTest.Net.Processes.ProcessRunner(isTrueString(_autoEscape), exePath, args.ToArray());
+
+            _cmdLine = procRunner.ToString(); // What will be spawned
+
             procRunner.OutputReceived += new ProcessOutputEventHandler(run_OutputReceived);
             _retCode = procRunner.Run().ToString();
         }
@@ -363,5 +388,20 @@ namespace ContinuumProcessRunner
                 lock (_sbStdOutLock) { _sbStdOut.AppendLine(args.Data); }            
         }
 
+
+        public static bool isTrueString(string target)
+        {
+            string cleanTarget = target.Trim().ToUpper();
+            switch(cleanTarget)
+            {
+                case "Y":
+                case "TRUE":
+                case "1":
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        }
     }
 }
