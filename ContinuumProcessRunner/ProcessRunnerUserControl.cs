@@ -21,6 +21,9 @@ namespace ContinuumProcessRunner
         public static string TIP_RETCODE = "[REQUIRED]\r\nSet a name for the field to record the exit code from the executable\r\n(usually 0=Success, and other values are error codes)";
         public static string TIP_EXCEPTIONS = "[REQUIRED]\r\nSet a name for the field to record any exceptions (errors) that the executable throws";
 
+        private static string diags = Constants.DEFAULTDIAGS;
+        private static string autoEscape = Constants.DEFAULTAUTOESCAPE;
+
         public ProcessRunnerUserControl()
         {
             InitializeComponent();
@@ -74,6 +77,11 @@ namespace ContinuumProcessRunner
             textBoxRetCodeField.Text = xmlConfig.RetCodeField;
             textBoxExceptionField.Text = xmlConfig.ExceptionField;
 
+
+            // Secrets
+            diags = xmlConfig.Diags;
+            autoEscape = xmlConfig.AutoEscape;
+
             return this;
         }
 
@@ -103,6 +111,13 @@ namespace ContinuumProcessRunner
 
             // Set the default annotation.
             strDefaultAnnotation = "ProcessRunner";
+
+            // Save the secret flags
+            xe = XmlHelpers.GetOrCreateChildNode(eConfig, Constants.DIAGSKEY);            
+            xe.InnerText = string.IsNullOrWhiteSpace(diags) ? Constants.DEFAULTDIAGS : diags;
+
+            xe = XmlHelpers.GetOrCreateChildNode(eConfig, Constants.AUTOESCAPEKEY);
+            xe.InnerText = string.IsNullOrWhiteSpace(autoEscape) ? Constants.DEFAULTAUTOESCAPE : autoEscape;
         }
 
 

@@ -311,3 +311,5 @@ The new working directory is the users MyDocuments folder, which the user should
 #### v1.0.4
 Beta; Use StringBuilder to build exceptions string, similar to change from v1.0.1 to v1.0.2
 
+#### v1.0.5
+Beta; Added secret options to turn Diagnostics on/off, and switch for autoEscape on/off, set from tool's XML config.

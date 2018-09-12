@@ -47,12 +47,21 @@ namespace CSharpTest.Net.Processes
 		private Process _running;
 		private TextWriter _stdIn;
 
+        private bool _autoEscape = true;
+
+
+
 		/// <summary>Creates a ProcessRunner for the given executable </summary>
 		public ProcessRunner(string executable)
-			: this(executable, EmptyArgList)
+			: this(true, executable, EmptyArgList)
 		{ }
-		/// <summary>Creates a ProcessRunner for the given executable and arguments </summary>
-		public ProcessRunner(string executable, params string[] args)
+
+        public ProcessRunner(bool autoEscape, string executable)
+            : this(autoEscape, executable, EmptyArgList)
+        { }
+
+        /// <summary>Creates a ProcessRunner for the given executable and arguments </summary>
+        public ProcessRunner(bool autoEscape, string executable, params string[] args)
 		{
 			_executable = Utils.FileUtils.FindFullPath(Check.NotEmpty(executable));
 			_arguments = args == null ? EmptyArgList : args;
@@ -61,6 +70,8 @@ namespace CSharpTest.Net.Processes
 			_exitCode = 0;
 			_running = null;
 			_stdIn = null;
+
+            _autoEscape = autoEscape;
 		}
 
 		/// <summary> Detaches event handlers and closes input streams </summary>
@@ -80,7 +91,14 @@ namespace CSharpTest.Net.Processes
     	/// <summary> Returns a debug-view string of process/arguments to execute </summary>
 		public override string ToString()
 		{
-			return String.Format("{0} {1}", _executable, ArgumentList.EscapeArguments(_arguments));
+            string stringArguments = "";
+
+            if (_autoEscape)
+                stringArguments = ArgumentList.EscapeArguments(_arguments);
+            else
+                stringArguments = ArgumentList.DoNotEscapeArguments(_arguments);
+
+            return String.Format("{0} {1}", _executable, stringArguments);
 		}
 
 		/// <summary> Notifies caller of writes to the std::err or std::out </summary>
@@ -240,10 +258,8 @@ namespace CSharpTest.Net.Processes
 			return ExitCode;
 		}
 
-		private void InternalStart(params string[] arguments)
+		private void InternalStart(params string[] arguments )
 		{
-            //if (IsRunning)
-            //	throw new InvalidOperationException(Resources.ProcessRunnerAlreadyRunning);
             if (IsRunning)
             	throw new InvalidOperationException("The running process must first exit.");
 
@@ -257,8 +273,13 @@ namespace CSharpTest.Net.Processes
 			_stdIn = null;
 			_running = new Process();
 
-			string stringArgs = ArgumentList.EscapeArguments(arguments);
-			ProcessStartInfo psi = new ProcessStartInfo(_executable, stringArgs);
+            string stringArgs = "";
+            if (_autoEscape)
+                stringArgs = ArgumentList.EscapeArguments(arguments);
+            else
+                stringArgs = ArgumentList.DoNotEscapeArguments(arguments);
+
+            ProcessStartInfo psi = new ProcessStartInfo(_executable, stringArgs);
 			psi.WorkingDirectory = this.WorkingDirectory;
 
 			psi.RedirectStandardInput = true;

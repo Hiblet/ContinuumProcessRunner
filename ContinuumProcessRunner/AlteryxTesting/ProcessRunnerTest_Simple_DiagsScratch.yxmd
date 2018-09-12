@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <AlteryxDocument yxmdVer="2018.3">
   <Nodes>
-    <Node ToolID="2">
+    <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
-        <Position x="54" y="54" />
+        <Position x="150" y="90" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -67,13 +67,34 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTextInput" />
     </Node>
-    <Node ToolID="4">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="354" y="54" />
+    <Node ToolID="2">
+      <GuiSettings Plugin="ContinuumProcessRunner.ProcessRunner">
+        <Position x="318" y="90" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_17468_feefbe2595b2456b8379d8a6c83af1c3_\Engine_13700_ff5f8c30c6684750a47bf9db81e14394_.yxdb</TempFile>
+          <ExePathField>ColA</ExePathField>
+          <StdOutField>ProcessRunnerStdOut</StdOutField>
+          <RetCodeField>ProcessRunnerReturnCode</RetCodeField>
+          <ExceptionField>ProcessRunnerException</ExceptionField>
+          <Diags>Y</Diags>
+          <AutoEscape>N</AutoEscape>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>ProcessRunner</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="ContinuumProcessRunner.dll" EngineDllEntryPoint=".Net:ContinuumProcessRunner.ProcessRunnerNetPlugin" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="486" y="90" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_2592_d56b173a6578479d8f34ec9265304f4b_\Engine_5132_289e76b28827422a8f0eaa1db77f3612_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -95,34 +116,15 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
-    <Node ToolID="5">
-      <GuiSettings Plugin="ContinuumProcessRunner.ProcessRunner">
-        <Position x="210" y="54" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <ExePathField>ColA</ExePathField>
-          <StdOutField>ProcessRunnerStdOut</StdOutField>
-          <RetCodeField>ProcessRunnerReturnCode</RetCodeField>
-          <ExceptionField>ProcessRunnerException</ExceptionField>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText>ProcessRunner</DefaultAnnotationText>
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="ContinuumProcessRunner.dll" EngineDllEntryPoint=".Net:ContinuumProcessRunner.ProcessRunnerNetPlugin" />
-    </Node>
   </Nodes>
   <Connections>
     <Connection>
-      <Origin ToolID="2" Connection="Output" />
-      <Destination ToolID="5" Connection="Input" />
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="5" Connection="Output" />
-      <Destination ToolID="4" Connection="Input" />
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
@@ -143,7 +145,7 @@
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>ProcessRunnerTest_Simple</Name>
+      <Name>ProcessRunnerTest_Simple_DiagsScratch</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

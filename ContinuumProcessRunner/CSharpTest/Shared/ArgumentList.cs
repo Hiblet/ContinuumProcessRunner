@@ -451,6 +451,19 @@ namespace CSharpTest.Net.Utils
 			return sb.ToString(0, Math.Max(0, sb.Length-1));
 		}
 
+        /// <summary>
+        /// Allow user to optionally not escape arguments
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static string DoNotEscapeArguments(params string[] args)
+        {
+            if (args == null)
+                throw new ArgumentNullException("args");
+
+            return string.Join(" ", args);
+        }
+
         /// <summary> The 'more' correct escape/join for arguments </summary>
         public static string EscapeArguments(params string[] args)
         {
