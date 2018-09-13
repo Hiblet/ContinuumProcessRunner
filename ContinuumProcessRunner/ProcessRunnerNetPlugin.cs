@@ -30,6 +30,7 @@ namespace ContinuumProcessRunner
         private string _retCodeField = Constants.DEFAULTRETCODEFIELD;
         private string _exceptionsField = Constants.DEFAULTEXCEPTIONFIELD;
         private string _diagsField = Constants.DEFAULTDIAGSFIELD;
+        private string _selectedCols = Constants.DEFAULTSELECTEDCOLS;
 
         private string _cmdLine = "";
         private string _diags = "N";
@@ -64,6 +65,8 @@ namespace ContinuumProcessRunner
 
                 getConfigSetting(configElement, Constants.DIAGSKEY, ref _diags);
                 getConfigSetting(configElement, Constants.AUTOESCAPEKEY, ref _autoEscape);
+
+                getConfigSetting(configElement, Constants.SELECTEDCOLSKEY, ref _selectedCols);
             }
 
             _outputHelper = new AlteryxRecordInfoNet.PluginOutputConnectionHelper(_toolID, _engineInterface);
@@ -337,6 +340,14 @@ namespace ContinuumProcessRunner
 
         private List<string> getArguments(RecordData recordDataIn)
         {
+            string[] arrSelectedCols = new string[0];
+
+            bool bAllColsSelected = 
+                String.Equals(_selectedCols, Constants.DEFAULTSELECTEDCOLS, StringComparison.OrdinalIgnoreCase);
+
+            if (_selectedCols != Constants.ZEROSELECTEDCOLS && !bAllColsSelected)            
+                arrSelectedCols = _selectedCols.Split(',');
+
             List<string> items = new List<string>();
 
             // loop through the inbound records, build a string
@@ -350,17 +361,21 @@ namespace ContinuumProcessRunner
                 // Do not include the executable in the arguments
                 if (!(String.Equals(fbColumnName, _exePathField, StringComparison.OrdinalIgnoreCase)))
                 {
-                    try
-                    {
-                        fbData = fbIn.GetAsString(recordDataIn) ?? "";
-                    }
-                    catch (NullReferenceException)
-                    {
-                        // If there is no data, catch and write out an empty string
-                        fbData = "";
-                    }
+                    // If the fbColumnName matches a selected column name, include it as a parameter
+                    if (bAllColsSelected || arrSelectedCols.Contains(fbColumnName))
+                    { 
+                        try
+                        {
+                            fbData = fbIn.GetAsString(recordDataIn) ?? "";
+                        }
+                        catch (NullReferenceException)
+                        {
+                            // If there is no data, catch and write out an empty string
+                            fbData = "";
+                        }
 
-                    items.Add(fbData);
+                        items.Add(fbData);
+                    }
                 }
             }
 

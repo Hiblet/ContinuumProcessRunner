@@ -20,6 +20,14 @@ namespace ContinuumProcessRunner
         public static string TIP_STDOUT = "[REQUIRED]\r\nSet a name for the field to record the redirected Standard Output from the executable (usually what the Executable prints)";
         public static string TIP_RETCODE = "[REQUIRED]\r\nSet a name for the field to record the exit code from the executable\r\n(usually 0=Success, and other values are error codes)";
         public static string TIP_EXCEPTIONS = "[REQUIRED]\r\nSet a name for the field to record any exceptions (errors) that the executable throws";
+        public static string TIP_SELECTEDCOLS = "Checked columns will be converted to string and passed as command line arguments.\r\nThe ExePath column will not be passed, it will be ignored regardless of check state.";
+        public static string TIP_SELECTEDCOLS_ALL = "Set all columns as Checked.";
+        public static string TIP_SELECTEDCOLS_NONE = "Reset all columns to Unchecked.";
+        public static string TIP_SELECTEDCOLS_INVERT = "Reverse the checks for all columns.";
+        public static string TIP_SELECTEDCOLS_FORGET = "Remove columns that are marked as missing.";
+
+
+        public static string MISSING = " (Missing)";
 
         private static string diags = Constants.DEFAULTDIAGS;
         private static string autoEscape = Constants.DEFAULTAUTOESCAPE;
@@ -28,6 +36,7 @@ namespace ContinuumProcessRunner
         {
             InitializeComponent();
             setToolTips();
+            checkedListBoxSelectedCols.ItemCheck += new ItemCheckEventHandler(checkedListBoxSelectedCols_ItemCheck);
         }
 
 
@@ -44,6 +53,14 @@ namespace ContinuumProcessRunner
 
             toolTip1.SetToolTip(labelExceptionField, TIP_EXCEPTIONS);
             toolTip1.SetToolTip(textBoxExceptionField, TIP_EXCEPTIONS);
+
+            toolTip1.SetToolTip(labelSelectedCols, TIP_SELECTEDCOLS);
+            toolTip1.SetToolTip(checkedListBoxSelectedCols, TIP_SELECTEDCOLS);
+
+            toolTip1.SetToolTip(linkLabelAll, TIP_SELECTEDCOLS_ALL);
+            toolTip1.SetToolTip(linkLabelNone, TIP_SELECTEDCOLS_NONE);
+            toolTip1.SetToolTip(linkLabelInvert, TIP_SELECTEDCOLS_INVERT);
+            toolTip1.SetToolTip(linkLabelForget, TIP_SELECTEDCOLS_FORGET);
         }
 
         public Control GetConfigurationControl(
@@ -69,6 +86,14 @@ namespace ContinuumProcessRunner
 
             setComboBox(comboBoxExePathField, xmlConfig, Constants.EXEPATHFIELDKEY, eIncomingMetaInfo);
 
+
+            /////////////////////////
+            // SELECTED COLUMNS BOX
+            //
+
+            setCheckedListBox(checkedListBoxSelectedCols, xmlConfig, Constants.SELECTEDCOLSKEY, eIncomingMetaInfo);
+            
+
             ///////////////////////////////////////////////////////////////////
             // Output Fields
             //
@@ -92,9 +117,34 @@ namespace ContinuumProcessRunner
             xe.InnerText = selectedItem == null ? valueDefault : selectedItem.ToString();
         }
 
+        private void saveSubForCheckedListBox(CheckedListBox box, XmlElement eConfig, string key)
+        {
+            XmlElement xe = XmlHelpers.GetOrCreateChildNode(eConfig, key);
+
+            List<string> selectedCols = new List<string>();
+
+            foreach (var item in box.CheckedItems)
+            {
+                string selectedCol = item.ToString();
+
+                // Drop the " (Missing)" suffix if it is appended
+                if (selectedCol.EndsWith(MISSING))                
+                    selectedCol = selectedCol.Substring(0, selectedCol.Length - MISSING.Length);
+
+                selectedCols.Add(selectedCol);
+            }
+            
+            if (selectedCols.Count() == 0)
+                xe.InnerText = Constants.ZEROSELECTEDCOLS;
+            else
+                xe.InnerText = string.Join(",", selectedCols);
+        }
+
         public void SaveResultsToXml(XmlElement eConfig, out string strDefaultAnnotation)
         {
             saveSubForComboBox(comboBoxExePathField, eConfig, Constants.EXEPATHFIELDKEY, Constants.DEFAULTEXEPATHFIELD);
+
+            saveSubForCheckedListBox(checkedListBoxSelectedCols, eConfig, Constants.SELECTEDCOLSKEY);
 
             // Output Fields
             XmlElement xe = XmlHelpers.GetOrCreateChildNode(eConfig, Constants.STDOUTFIELDKEY);
@@ -130,6 +180,82 @@ namespace ContinuumProcessRunner
                    string.Equals(fieldType, "v_wstring", StringComparison.OrdinalIgnoreCase);
         }
 
+        private void setCheckedListBox(CheckedListBox box, XmlInputConfiguration xmlConfig, string key, XmlElement[] eIncomingMetaInfo)
+        {
+            string csvTargets = (string)xmlConfig[key];
+
+            // Split the csv 
+            string[] targets = csvTargets.Split(',');
+
+            bool bCheckAll = false;
+            if (targets.Length == 1 && String.Equals(targets[0], Constants.DEFAULTSELECTEDCOLS, StringComparison.OrdinalIgnoreCase))
+            {
+                targets = new string[0];
+                bCheckAll = true;
+            }
+
+            // If there are no selected columns, clear the targets list
+            if (targets.Length == 1 && String.Equals(targets[0], Constants.ZEROSELECTEDCOLS, StringComparison.OrdinalIgnoreCase))
+                targets = new string[0];
+
+            box.Items.Clear();
+
+            if (eIncomingMetaInfo == null || eIncomingMetaInfo[0] == null)
+            {
+                // No incoming connection; 
+                // Cycle through the targets, adding them as missing
+                foreach (string target in targets)
+                {
+                    if (!bCheckAll)
+                        box.Items.Add(target + MISSING, true);
+                }
+            }
+            else
+            {
+                // We have an incoming connection
+
+                var xmlElementMetaInfo = eIncomingMetaInfo[0];
+                var xmlElementRecordInfo = xmlElementMetaInfo.FirstChild;
+                string fieldName = "";
+
+                foreach (XmlElement elementChild in xmlElementRecordInfo)
+                {
+                    fieldName = elementChild.GetAttribute("name");
+                    bool bSelected = false;
+
+                    foreach (string target in targets)
+                    {
+                        // If the current field on the inbound stream is selected, set the checked flag
+                        bSelected = bSelected || String.Equals(fieldName, target, StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    // If bCheckAll is set, select this column anyway
+                    bSelected = bSelected || bCheckAll;
+
+                    box.Items.Add(fieldName, bSelected);
+                }
+
+                // Add the missing fields
+                foreach (string target in targets)
+                {
+                    bool bExists = false;
+
+                    foreach (XmlElement elementChild in xmlElementRecordInfo)
+                    {
+                        fieldName = elementChild.GetAttribute("name");
+
+                        // If the current field in the target list exists, set the exists flag
+                        bExists = bExists || String.Equals(fieldName, target, StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (!bExists)
+                    {
+                        // Target does not exist in the inbound fields list, so it is missing
+                        box.Items.Add(target + MISSING, true);
+                    }
+                }
+            }
+        }
 
         private void setComboBox(ComboBox cbox, XmlInputConfiguration xmlConfig, string key, XmlElement[] eIncomingMetaInfo)
         {
@@ -170,5 +296,71 @@ namespace ContinuumProcessRunner
             } // end of "if (eIncomingMetaInfo == null || eIncomingMetaInfo[0] == null)"
         }
 
+        private void checkedListBoxSelectedCols_Click(object sender, EventArgs e)
+        {
+            var dummy = false;
+        }
+
+        private void checkedListBoxSelectedCols_ItemCheck(object sender, EventArgs e)
+        {
+            if (checkedListBoxSelectedCols.SelectedIndex != -1)
+                checkedListBoxSelectedCols.SetSelected(checkedListBoxSelectedCols.SelectedIndex, false);
+        }
+
+        private void linkLabelAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Check all checkboxes
+            int countItems = checkedListBoxSelectedCols.Items.Count;
+            for (var i = 0; i < countItems; ++i)
+            {
+                checkedListBoxSelectedCols.SetItemCheckState(i, System.Windows.Forms.CheckState.Checked);
+            }
+        }
+
+        private void linkLabelNone_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Uncheck all checkboxes
+            int countItems = checkedListBoxSelectedCols.Items.Count;
+            for (var i = 0; i < countItems; ++i)
+            {
+                checkedListBoxSelectedCols.SetItemCheckState(i, CheckState.Unchecked);
+            }
+        }
+
+        private void linkLabelInvert_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Invert check for all checkboxes
+            int countItems = checkedListBoxSelectedCols.Items.Count;
+            for (var i = 0; i < countItems; ++i)
+            {
+                var state = checkedListBoxSelectedCols.GetItemCheckState(i);
+                
+                if (state == CheckState.Checked)
+                    checkedListBoxSelectedCols.SetItemCheckState(i, CheckState.Unchecked);
+                else
+                    checkedListBoxSelectedCols.SetItemCheckState(i, CheckState.Checked);
+            }
+        }
+
+        private void linkLabelForget_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Remove items that are missing
+            var itemsToRemove = new List<String>();
+
+            int countItems = checkedListBoxSelectedCols.Items.Count;
+            for (var i = 0; i < countItems; ++i)
+            {
+                string itemText = checkedListBoxSelectedCols.Items[i].ToString();
+                if (itemText.EndsWith(MISSING))
+                {
+                    itemsToRemove.Add(itemText);
+                }
+            }
+
+            foreach (var itemToRemove in itemsToRemove)
+            {
+                checkedListBoxSelectedCols.Items.Remove(itemToRemove);
+            }
+        }
     }
 }
