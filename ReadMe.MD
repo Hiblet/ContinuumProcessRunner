@@ -5,26 +5,30 @@ A Plug-in Tool for Alteryx to run processes in a shell with parameters (such as 
 
 ## Intro
 
-This tool will take the path to an executable file, and any additional parameters, and run the exe in a shell.  The parameters you pass will be the data in your Alteryx columns, in column order.  The names of the columns are ignored, only the relative order is important.
+An "executable" is a program, and it usually is held in a file with a ".EXE" extension.  Many executables can be run from DOS or Windows.Start.Run, and you can usually pass in data to the executable by putting strings after the program filename, and these strings are called command line arguments.
+
+This tool will take the path to an executable file (directory and filename), and any additional command line arguments, and run the exe in a shell.  The argument or parameters you pass will be the data in your selected Alteryx columns, in column order.  The names of the columns do not matter, only the relative order is important.
 
 The data returned is whatever the executable writes to it's Standard Output stream, which is usually what the executable prints to the command line.
 
-When any executable completes, it sends back a return code.  This is usually 0 for success, and other numbers as failure codes, and this return code is reported back to your workflow.
+When any executable completes, it sends back a return code.  This is usually 0 for success, and other numbers as failure codes, and this return code is reported directly back to your workflow, to a new column.
 
-Also, if the spawned process errors or throws an exception, the errors are trapped and reported.  This is achieved by monitoring what the executable writes to the Standard Error output stream.
+Also, if the spawned process errors or throws an exception, the errors are trapped and directly reported to another new column.  This is achieved by monitoring what the executable writes to the Standard Error output stream.
 
-Each Alteryx row can refer to a different executable, so you can run either different versions of Python, or completely distinct, unrelated executables, from the same table data.  Each executable must complete before the next is called, so you can chain calls to a series of different executables together.
+Each Alteryx row can refer to a different executable, so you can run either different versions of programs (as in different Python versions), or completely distinct, unrelated executables, from the same table data.  Each executable must complete before the next is called, so you can chain calls to a series of different executables together.
 
 
 ### Why Would I Use This Thing?
 
 If you have existing Python, Ruby, Perl, DOS Batch or Powershell scripts, you can integrate these directly into your workflows.  If these scripts take command line parameters, there is effectively nothing you need to do to these scripts to adapt them.
 
-If you have multiple different command line apps that are currently manually executed, you can build a flow to puppet them.  Additionally, you can build logic into your workflow and chain ProcessRunner tools together.  So you can do StepA (Python), check the output, then run StepB (Perl), C (Powershell) and D (Ruby), and then email the output of StepE back to someone.  Basically, you have all the awesome power of Alteryx, and seamless integration to your legacy command line utils or interpreted languages.
+If you have multiple different command line apps that are currently manually executed, you can build a flow to puppet them.  Additionally, you can build logic into your workflow and chain ProcessRunner tools together.  So you can do StepA (Python), check the output, then run StepB (Perl), C (Powershell) and D (Ruby), and then email the output of StepE back to someone.  Basically, you have all the awesome power of Alteryx, and seamless integration to your legacy command line utilities or interpreted language code.
 
-Alteryx does have a command line adapter, but it often requires you to output data to file, then adapt your command line util to pick up the file.  Then your command line util has to output a file, and Alteryx has to pick up the file.  It can be made to work, but it is brittle and inelegant.  You also do not get any errors in your utils coming back to the flow, or the return code, so if something goes wrong, debugging is hard.
+Alteryx does have a command line adapter, but it often requires you to output data to file, then adapt your command line util to pick up the file.  Then your command line util has to output a file, and Alteryx has to pick up that output file.  It can be made to work, but it is brittle and inelegant.  You also do not get any errors in your utils coming back to the flow, or the return code, so if something goes wrong, debugging is hard.
 
-This tool effectively gives you the Windows "Start, Run" functionality in your workflow.  Anything you can trigger from Start, Run, you can run from within Alteryx.  This is awesome.  Why would you not use this thing?
+This tool effectively gives you the Windows.Start.Run or DOS (CommandLine) functionality in your workflow.  Anything you can trigger from Windows.Start.Run, you can run from within Alteryx.  If you have your own custom code, or legacy utilities that do a particular job, you can integrate them directly into your workflows.
+
+This is awesome.  Why would you not use this thing?
 
 
 
@@ -33,7 +37,7 @@ This tool effectively gives you the Windows "Start, Run" functionality in your w
 
 Alteryx has a tool to shell out to DOS and run some command line stuff, but it is a little clunky, and getting data into and out of the shell can be problematic.
 
-I was looking for a way to shell out and run Python scripts.  To do this, you run Python.Exe, and pass the executable the script name as the first parameter, and any command line arguments as subsequent parameters.  Once I got that working, it occurred to me that many other command line apps work the same way, they have an exe name, and they take command line arguments.  If I allowed the user to pass in the executable name, I could pass the Alteryx column data as the command line arguments, and I would have a generalised process runner, rather than just a Python adapter.
+I was looking for a way to shell out and run Python scripts.  To do this, you run Python.Exe, and pass the executable the script name as the first parameter, and any command line arguments as subsequent parameters.  Once I got that working, it occurred to me that many other command line apps work exactly the same way, they have an exe file name, and they take command line arguments.  If I allowed the user to pass in the executable name, I could pass the Alteryx column data as the command line arguments, and I would have a generalised process runner, rather than just a Python adapter.
 
 Theoretically, Windows does not really distinguish between DOS and Windows apps too much, so I am thinking that you could pass a Windows executable path, and if that Windows app ran on command line arguments, and completed without interaction, it would work the same way.  I have not tried this though...
 
@@ -42,11 +46,11 @@ The tool is written in C# using DotNet 4.6.1, targeting x64 platform.
 
 ### Tech Notes
 
-Shelling out to another process is difficult.  Really difficult.  One of the main problems is that your calling program (Alteryx) must listen to both the output stream, and the error stream.  If your calling program listens synchronously, you are exposed to the risk of a deadlock.
+Shelling out to another process is difficult.  Really difficult.  One of the main problems is that your calling program (Alteryx) must listen to both the output stream, and the error stream.  If your calling program listens synchronously, you are exposed to the risk of a deadlock, ie boom, tears.
 
 This tool avoids the problem by using asynchronous events to listen to the output and error streams.  That means it will return both the output, and the errors, and the exit code.  The tool can also handle multiple outputs, where the spawned process prints multiple lines back to the console over time.
 
-The input parameters are passed as command line arguments to the executable, in Alteryx column order, as Strings.  All columns are passed.
+The input parameters are passed as command line arguments to the executable, in Alteryx column order, as Strings.  You can select the columns to pass to the command line, and all other columns are ignored and just pass through the tool.
 
 The output and error columns are currently sized at 1073741823 characters (Int32.MaxValue bytes, 2 bytes per char), and the return code is a generous 256 characters, considering that the code should be a single numeric digit.
 
@@ -96,6 +100,22 @@ The tool requires you to select the text column that contains the path to the ex
 
 This can be a relative path definition, but the path may be relative to where the plug-in is running (C:\Program Files\Alteryx\bin\Plugins\ContinuumProcessRunner) rather than where the workflow is saved.  To be safe, just use a full path, from the root of C: downwards (or D:, whatever).
 
+Next is the SelectedCols box, and here you tick the box for every column that you want to pass to your command line executable.  The arguments are passed as strings, in the order of that the columns appear in the Alteryx row.  Data is automatically escaped, so if you have a column with the string...
+
+```
+    My Data
+```
+
+...this is passed on the command line in quotes like this...
+
+```
+    c:\users\user\myProgram.exe "My Data"
+```
+... because if it was passed literally, the receiving executable would process it as two distinct text parameters, "My" and "Data".
+
+
+## Output
+
 The tool has three output columns, "Std Out", "Return Code" and "Exceptions", which you can rename.
 
 "Std Out" is the column that will receive the printed output from your spawned process.
@@ -109,6 +129,17 @@ Executables are called synchronously (one at a time) in row order, and must comp
 Columns that are not the executable path are sent to the command line as parameters, in column order.
 
 I would suggest making the executable the first column.  If the exe runs a script, make the script path the second column, and then all subsequent columns can be your command line input data.
+
+
+## Diagnostics
+
+An Alteryx workflow is an XML format data file.  In the configuration for the ProcessRunner tool are two switches that allow you to add some diagnostics, for when you have problems.
+
+The first is AutoEscape, which is defaulted to "Y".  This makes the tool escape your command line arguments by default.  However, you may want to have more control and turn off this feature, so that you pass exactly what you have in your flow data cells to your command line executable.  To turn off auto escaping, set the flag to "N", and then the tool will not put quotes around strings that have spaces.
+
+The second is Diags, which defaults to "N".  When Diags is set to "Y", a diagnostic column is added to the output.  This column has the command line executable and the parameters that the tool tried to use to spawn the new process.  If you are having problems getting your data into your process correctly, you can see what the tool is doing using this Diags column.
+
+These two features are hidden away to keep the tool configuration screen as clean as possible.  
 
 
 ### Example A: Python Scripts
@@ -294,6 +325,8 @@ This product is therefore the private commercial intellectual property of Contin
 
 ## Update History
 
+### The tool should have a version code on the configuration screen, next to the name.  This section details the changes relative to each version.
+
 #### v1.0.0 
 Alpha Release
 
@@ -313,3 +346,6 @@ Beta; Use StringBuilder to build exceptions string, similar to change from v1.0.
 
 #### v1.0.5
 Beta; Added secret options to turn Diagnostics on/off, and switch for autoEscape on/off, set from tool's XML config.
+
+#### v1.0.6
+Beta; Added SelectedCols control, to selectively pass columns to the command line.

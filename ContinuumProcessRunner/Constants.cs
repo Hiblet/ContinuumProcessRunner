@@ -16,6 +16,7 @@ namespace ContinuumProcessRunner
         public static string EXCEPTIONFIELDKEY = "ExceptionField";
         public static string DIAGSKEY = "Diags";
         public static string AUTOESCAPEKEY = "AutoEscape";
+        public static string SELECTEDCOLSKEY = "SelectedCols";
 
         // Default Values
         public static string DEFAULTEXEPATHFIELD = "ProcessRunnerExePath";
@@ -25,8 +26,12 @@ namespace ContinuumProcessRunner
         public static string DEFAULTDIAGSFIELD = "ProcessRunnerDiagnostics";
         public static string DEFAULTDIAGS = "N";
         public static string DEFAULTAUTOESCAPE = "Y";
+        public static string DEFAULTSELECTEDCOLS = "##ALLCOLUMNS##";
+        public static string ZEROSELECTEDCOLS = "##NOCOLUMNS##";
 
         public static int LARGEOUTPUTFIELDSIZE = Int32.MaxValue;
         public static int SMALLOUTPUTFIELDSIZE = 512;
+
+        
     }
 }

@@ -19,6 +19,8 @@ namespace ContinuumProcessRunner
         public string Diags { get; private set; }
         public string AutoEscape { get; private set; }
 
+        public string SelectedCols { get; private set; }
+
 
 
         // Note that the constructor is private.  Instances are created through the LoadFromConfigration method.
@@ -28,7 +30,8 @@ namespace ContinuumProcessRunner
             string retCodeField,
             string exceptionField,
             string diags,
-            string autoEscape)
+            string autoEscape,
+            string selectedCols)
         {
             ExePathField = exePathField;
             StdOutField = stdOutField;
@@ -36,6 +39,7 @@ namespace ContinuumProcessRunner
             ExceptionField = exceptionField;
             Diags = diags;
             AutoEscape = autoEscape;
+            SelectedCols = selectedCols;
         }
 
         public static string getStringFromConfig(XmlElement eConfig, string key, string valueDefault)
@@ -61,6 +65,7 @@ namespace ContinuumProcessRunner
 
             string diags = getStringFromConfig(eConfig, Constants.DIAGSKEY, Constants.DEFAULTDIAGS);
             string autoEscape = getStringFromConfig(eConfig, Constants.AUTOESCAPEKEY, Constants.DEFAULTAUTOESCAPE);
+            string selectedCols = getStringFromConfig(eConfig, Constants.SELECTEDCOLSKEY, Constants.DEFAULTSELECTEDCOLS);
 
             return new XmlInputConfiguration(
                 exePathField, 
@@ -68,7 +73,8 @@ namespace ContinuumProcessRunner
                 retCodeField, 
                 exceptionField,
                 diags,
-                autoEscape);
+                autoEscape,
+                selectedCols);
         }
 
         // Property Name Accessor
