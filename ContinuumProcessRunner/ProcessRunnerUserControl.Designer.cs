@@ -50,12 +50,12 @@
             this.panel4 = new System.Windows.Forms.Panel();
             this.labelDivider2 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.checkedListBoxSelectedCols = new System.Windows.Forms.CheckedListBox();
-            this.labelSelectedCols = new System.Windows.Forms.Label();
-            this.linkLabelAll = new System.Windows.Forms.LinkLabel();
-            this.linkLabelNone = new System.Windows.Forms.LinkLabel();
-            this.linkLabelInvert = new System.Windows.Forms.LinkLabel();
             this.linkLabelForget = new System.Windows.Forms.LinkLabel();
+            this.linkLabelInvert = new System.Windows.Forms.LinkLabel();
+            this.linkLabelNone = new System.Windows.Forms.LinkLabel();
+            this.linkLabelAll = new System.Windows.Forms.LinkLabel();
+            this.labelSelectedCols = new System.Windows.Forms.Label();
+            this.checkedListBoxSelectedCols = new System.Windows.Forms.CheckedListBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -83,7 +83,7 @@
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(38, 12);
             this.labelVersion.TabIndex = 1;
-            this.labelVersion.Text = "(v1.0.6)";
+            this.labelVersion.Text = "(v1.0.7)";
             // 
             // labelHeader
             // 
@@ -241,50 +241,18 @@
             this.panel5.Size = new System.Drawing.Size(300, 150);
             this.panel5.TabIndex = 10;
             // 
-            // checkedListBoxSelectedCols
+            // linkLabelForget
             // 
-            this.checkedListBoxSelectedCols.CheckOnClick = true;
-            this.checkedListBoxSelectedCols.FormattingEnabled = true;
-            this.checkedListBoxSelectedCols.Location = new System.Drawing.Point(120, 4);
-            this.checkedListBoxSelectedCols.Name = "checkedListBoxSelectedCols";
-            this.checkedListBoxSelectedCols.Size = new System.Drawing.Size(170, 139);
-            this.checkedListBoxSelectedCols.TabIndex = 0;
-            this.checkedListBoxSelectedCols.Click += new System.EventHandler(this.checkedListBoxSelectedCols_Click);
-            // 
-            // labelSelectedCols
-            // 
-            this.labelSelectedCols.AutoSize = true;
-            this.labelSelectedCols.Location = new System.Drawing.Point(8, 8);
-            this.labelSelectedCols.Name = "labelSelectedCols";
-            this.labelSelectedCols.Size = new System.Drawing.Size(75, 13);
-            this.labelSelectedCols.TabIndex = 1;
-            this.labelSelectedCols.Text = "Selected Cols:";
-            // 
-            // linkLabelAll
-            // 
-            this.linkLabelAll.ActiveLinkColor = System.Drawing.Color.Blue;
-            this.linkLabelAll.AutoSize = true;
-            this.linkLabelAll.Location = new System.Drawing.Point(8, 26);
-            this.linkLabelAll.Name = "linkLabelAll";
-            this.linkLabelAll.Size = new System.Drawing.Size(18, 13);
-            this.linkLabelAll.TabIndex = 2;
-            this.linkLabelAll.TabStop = true;
-            this.linkLabelAll.Text = "All";
-            this.linkLabelAll.VisitedLinkColor = System.Drawing.Color.Blue;
-            this.linkLabelAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelAll_LinkClicked);
-            // 
-            // linkLabelNone
-            // 
-            this.linkLabelNone.ActiveLinkColor = System.Drawing.Color.Blue;
-            this.linkLabelNone.AutoSize = true;
-            this.linkLabelNone.Location = new System.Drawing.Point(27, 26);
-            this.linkLabelNone.Name = "linkLabelNone";
-            this.linkLabelNone.Size = new System.Drawing.Size(33, 13);
-            this.linkLabelNone.TabIndex = 3;
-            this.linkLabelNone.TabStop = true;
-            this.linkLabelNone.Text = "None";
-            this.linkLabelNone.VisitedLinkColor = System.Drawing.Color.Blue;
-            this.linkLabelNone.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelNone_LinkClicked);
+            this.linkLabelForget.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.linkLabelForget.AutoSize = true;
+            this.linkLabelForget.Location = new System.Drawing.Point(8, 48);
+            this.linkLabelForget.Name = "linkLabelForget";
+            this.linkLabelForget.Size = new System.Drawing.Size(37, 13);
+            this.linkLabelForget.TabIndex = 5;
+            this.linkLabelForget.TabStop = true;
+            this.linkLabelForget.Text = "Forget";
+            this.linkLabelForget.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.linkLabelForget.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelForget_LinkClicked);
             // 
             // linkLabelInvert
             // 
@@ -299,18 +267,50 @@
             this.linkLabelInvert.VisitedLinkColor = System.Drawing.Color.Blue;
             this.linkLabelInvert.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelInvert_LinkClicked);
             // 
-            // linkLabelForget
+            // linkLabelNone
             // 
-            this.linkLabelForget.ActiveLinkColor = System.Drawing.Color.Blue;
-            this.linkLabelForget.AutoSize = true;
-            this.linkLabelForget.Location = new System.Drawing.Point(8, 48);
-            this.linkLabelForget.Name = "linkLabelForget";
-            this.linkLabelForget.Size = new System.Drawing.Size(37, 13);
-            this.linkLabelForget.TabIndex = 5;
-            this.linkLabelForget.TabStop = true;
-            this.linkLabelForget.Text = "Forget";
-            this.linkLabelForget.VisitedLinkColor = System.Drawing.Color.Blue;
-            this.linkLabelForget.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelForget_LinkClicked);
+            this.linkLabelNone.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.linkLabelNone.AutoSize = true;
+            this.linkLabelNone.Location = new System.Drawing.Point(27, 26);
+            this.linkLabelNone.Name = "linkLabelNone";
+            this.linkLabelNone.Size = new System.Drawing.Size(33, 13);
+            this.linkLabelNone.TabIndex = 3;
+            this.linkLabelNone.TabStop = true;
+            this.linkLabelNone.Text = "None";
+            this.linkLabelNone.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.linkLabelNone.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelNone_LinkClicked);
+            // 
+            // linkLabelAll
+            // 
+            this.linkLabelAll.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.linkLabelAll.AutoSize = true;
+            this.linkLabelAll.Location = new System.Drawing.Point(8, 26);
+            this.linkLabelAll.Name = "linkLabelAll";
+            this.linkLabelAll.Size = new System.Drawing.Size(18, 13);
+            this.linkLabelAll.TabIndex = 2;
+            this.linkLabelAll.TabStop = true;
+            this.linkLabelAll.Text = "All";
+            this.linkLabelAll.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.linkLabelAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelAll_LinkClicked);
+            // 
+            // labelSelectedCols
+            // 
+            this.labelSelectedCols.AutoSize = true;
+            this.labelSelectedCols.Location = new System.Drawing.Point(8, 8);
+            this.labelSelectedCols.Name = "labelSelectedCols";
+            this.labelSelectedCols.Size = new System.Drawing.Size(75, 13);
+            this.labelSelectedCols.TabIndex = 1;
+            this.labelSelectedCols.Text = "Selected Cols:";
+            // 
+            // checkedListBoxSelectedCols
+            // 
+            this.checkedListBoxSelectedCols.CheckOnClick = true;
+            this.checkedListBoxSelectedCols.FormattingEnabled = true;
+            this.checkedListBoxSelectedCols.Location = new System.Drawing.Point(120, 4);
+            this.checkedListBoxSelectedCols.Name = "checkedListBoxSelectedCols";
+            this.checkedListBoxSelectedCols.Size = new System.Drawing.Size(170, 139);
+            this.checkedListBoxSelectedCols.TabIndex = 0;
+            this.checkedListBoxSelectedCols.Click += new System.EventHandler(this.checkedListBoxSelectedCols_Click);
             // 
             // ProcessRunnerUserControl
             // 
