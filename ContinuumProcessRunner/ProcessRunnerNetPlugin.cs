@@ -24,6 +24,9 @@ namespace ContinuumProcessRunner
         private RecordInfo _recordInfoIn;
         private RecordInfo _recordInfoOut;
 
+        private RecordCopier _recordCopier;
+
+
         // App Specific Variables
         private string _exePathField = Constants.DEFAULTEXEPATHFIELD;
         private string _stdOutField = Constants.DEFAULTSTDOUTFIELD;
@@ -108,7 +111,8 @@ namespace ContinuumProcessRunner
         public bool II_Init(RecordInfo recordInfo)
         {
             _recordInfoIn = recordInfo;
-            prepRecordInfoOut(); // This allows zero record run to succeed and fixes problem with downstream tool complaining about a stream not being initialized.
+            //prepRecordInfoOut(); // This allows zero record run to succeed and fixes problem with downstream tool complaining about a stream not being initialized.
+            prep();
             return true;
         }
 
@@ -132,8 +136,6 @@ namespace ContinuumProcessRunner
 
         public bool II_PushRecord(RecordData recordDataIn)
         {
-            prepRecordInfoOut();
-
             // The same object is used in each call, so reset the result fields before using them.
             _retCode = "";
             _cmdLine = "";
@@ -165,7 +167,7 @@ namespace ContinuumProcessRunner
             recordOut.Reset();
 
             // Transfer existing data
-            copyRecordData(recordDataIn, recordOut);
+            _recordCopier.Copy(recordOut, recordDataIn);
 
 
             // Set Output Fields
@@ -217,14 +219,33 @@ namespace ContinuumProcessRunner
             }
         }
 
-        private void prepRecordInfoOut()
+        private void prep()
         {
-            if (_recordInfoOut == null)
+            // Exit if already done (safety)
+            if (_recordInfoOut != null)
+                return;
+
+            _recordInfoOut = new AlteryxRecordInfoNet.RecordInfo();
+
+            populateRecordInfoOut();
+
+            _recordCopier = new RecordCopier(_recordInfoOut, _recordInfoIn, true);
+
+            uint countFields = _recordInfoIn.NumFields();
+            for (int i = 0; i < countFields; ++i)
             {
-                // Prep the output once
-                populateRecordInfoOut();
-                _outputHelper.Init(_recordInfoOut, "Output", null, _xmlProperties);
+                var fieldName = _recordInfoIn[i].GetFieldName();
+
+                var newFieldNum = _recordInfoOut.GetFieldNum(fieldName, false);
+                if (newFieldNum == -1)
+                    continue;
+
+                _recordCopier.Add(newFieldNum, i);
             }
+
+            _recordCopier.DoneAdding();
+
+            _outputHelper.Init(_recordInfoOut, "Output", null, _xmlProperties);
         }
 
         private void populateRecordInfoOut()
@@ -248,31 +269,6 @@ namespace ContinuumProcessRunner
                 _recordInfoOut.AddField(_diagsField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");            
         }
 
-        private void copyRecordData(RecordData recordDataIn, Record recordOut)
-        {
-            uint countFields = _recordInfoIn.NumFields();
-            for (int i = 0; i < countFields; ++i)
-            {
-                FieldBase fbIn = _recordInfoIn[i];
-                FieldBase fbOut = _recordInfoOut[i];
-
-                // Point a fieldbase reference to the record out item.
-                string fbData = "";
-                try
-                {
-                    fbData = fbIn.GetAsString(recordDataIn) ?? "";
-                }
-                catch (NullReferenceException)
-                {
-                    // If there is no data, catch and write out an empty string
-                    fbData = "";
-                }
-                finally
-                {
-                    fbOut.SetFromString(recordOut, fbData);
-                }
-            }
-        }
 
         private string getFieldBaseStringData(string fieldName, RecordData recordDataIn)
         {

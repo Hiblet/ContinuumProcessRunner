@@ -1,61 +1,45 @@
 <?xml version="1.0"?>
 <AlteryxDocument yxmdVer="2018.3">
   <Nodes>
-    <Node ToolID="2">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
-        <Position x="54" y="54" />
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="42" y="30" width="480" height="84" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <NumRows value="7" />
+          <Text>Workflow: Harness totTest ProcessRunner wrapped in a macro.</Text>
+          <Font name="Arial" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="3" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
+        <Position x="534" y="234" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NumRows value="2" />
           <Fields>
-            <Field name="ColA" />
-            <Field name="ColB" />
-            <Field name="ColC" />
-            <Field name="Col D" />
+            <Field name="Farm" />
+            <Field name="Pet" />
           </Fields>
           <Data>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptargs.py</c>
-              <c>49</c>
-              <c>Steve</c>
+              <c>Sheep</c>
+              <c>Budgie</c>
             </r>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptexcpts.py</c>
-              <c>50</c>
-              <c>Rors</c>
-            </r>
-            <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptlong.py</c>
-              <c>51</c>
-              <c>Craig</c>
-            </r>
-            <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptargs.py</c>
-              <c>52</c>
-              <c>Steve Hibbert</c>
-            </r>
-            <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptargs.py</c>
-              <c>53</c>
-              <c>"Steve Hibbert"</c>
-            </r>
-            <r>
-              <c>C:\Windows\System32\cmd.exe</c>
-              <c>/c</c>
-              <c>C:\Users\user\documents\batchfiles\mybatch.bat</c>
-              <c>Testing</c>
-            </r>
-            <r>
-              <c>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</c>
-              <c>C:\users\user\documents\powershell\myPS.ps1</c>
-              <c>Alpha</c>
-              <c>Beta</c>
+              <c>Cow</c>
+              <c>Tortoise</c>
             </r>
           </Data>
         </Configuration>
@@ -69,22 +53,16 @@
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="354" y="54" />
+        <Position x="834" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_2880_2d6067b8aba94a6883b86b13c8e41e5b_\Engine_9076_bb056cc4fe934fef8472bf32f2fae6ab_.yxdb</TempFile>
-          <TempFileDataProfiling />
           <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
             <View1>
-              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
-            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -96,26 +74,23 @@
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
     <Node ToolID="5">
-      <GuiSettings Plugin="ContinuumProcessRunner.ProcessRunner">
-        <Position x="210" y="54" />
+      <GuiSettings>
+        <Position x="714" y="234" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <ExePathField>ColA</ExePathField>
-          <SelectedCols>ColA,ColB,ColC,Col D</SelectedCols>
-          <StdOutField>ProcessRunnerStdOut</StdOutField>
-          <RetCodeField>ProcessRunnerReturnCode</RetCodeField>
-          <ExceptionField>ProcessRunnerException</ExceptionField>
-          <Diags>N</Diags>
-          <AutoEscape>Y</AutoEscape>
+          <Value name="Input.Input"><![CDATA[ColD=Farm
+ColE=Pet
+]]></Value>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText>ProcessRunner</DefaultAnnotationText>
+          <Name>ProcessRunnerTest_Macro (3)</Name>
+          <AnnotationText>ProcessRunner in a Macro</AnnotationText>
+          <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="ContinuumProcessRunner.dll" EngineDllEntryPoint=".Net:ContinuumProcessRunner.ProcessRunnerNetPlugin" />
+      <EngineSettings Macro="ProcessRunnerTest_Macro.yxmc" />
     </Node>
   </Nodes>
   <Connections>
@@ -146,7 +121,7 @@
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>ProcessRunnerTest_Simple</Name>
+      <Name>ProcessRunnerTest_Macro_Harness</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

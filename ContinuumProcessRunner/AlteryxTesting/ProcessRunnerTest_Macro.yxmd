@@ -1,61 +1,34 @@
 <?xml version="1.0"?>
 <AlteryxDocument yxmdVer="2018.3">
   <Nodes>
-    <Node ToolID="2">
+    <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
-        <Position x="54" y="54" />
+        <Position x="234" y="162" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <NumRows value="7" />
+          <NumRows value="2" />
           <Fields>
             <Field name="ColA" />
             <Field name="ColB" />
             <Field name="ColC" />
             <Field name="Col D" />
+            <Field name="Col E" />
           </Fields>
           <Data>
             <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptargs.py</c>
-              <c>49</c>
-              <c>Steve</c>
-            </r>
-            <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptexcpts.py</c>
-              <c>50</c>
-              <c>Rors</c>
-            </r>
-            <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptlong.py</c>
-              <c>51</c>
-              <c>Craig</c>
-            </r>
-            <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptargs.py</c>
-              <c>52</c>
-              <c>Steve Hibbert</c>
-            </r>
-            <r>
-              <c>C:/users/user/appdata/local/programs/python/python37-32/python.exe</c>
-              <c>C:/users/user/documents/python/testscriptargs.py</c>
-              <c>53</c>
-              <c>"Steve Hibbert"</c>
+              <c>C:\Windows\System32\cmd.exe</c>
+              <c>/c</c>
+              <c>C:\Users\User\Documents\Visual Studio 2017\Projects\ContinuumProcessRunner\ContinuumProcessRunner\AlteryxTesting\TestingBatchFile.bat</c>
+              <c>Cat</c>
+              <c>Dog</c>
             </r>
             <r>
               <c>C:\Windows\System32\cmd.exe</c>
               <c>/c</c>
-              <c>C:\Users\user\documents\batchfiles\mybatch.bat</c>
-              <c>Testing</c>
-            </r>
-            <r>
-              <c>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</c>
-              <c>C:\users\user\documents\powershell\myPS.ps1</c>
-              <c>Alpha</c>
-              <c>Beta</c>
+              <c>C:\Users\User\Documents\Visual Studio 2017\Projects\ContinuumProcessRunner\ContinuumProcessRunner\AlteryxTesting\TestingBatchFile.bat</c>
+              <c>Pig</c>
+              <c />
             </r>
           </Data>
         </Configuration>
@@ -67,13 +40,55 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTextInput" />
     </Node>
-    <Node ToolID="4">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="354" y="54" />
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="18" y="18" width="420" height="72" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_2880_2d6067b8aba94a6883b86b13c8e41e5b_\Engine_9076_bb056cc4fe934fef8472bf32f2fae6ab_.yxdb</TempFile>
+          <Text>Workflow: Test the ProcessRunner wrapped in a macro.</Text>
+          <Font name="Arial" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="3" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="ContinuumProcessRunner.ProcessRunner">
+        <Position x="390" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ExePathField>ColA</ExePathField>
+          <SelectedCols>ColB,ColC,Col D,Col E</SelectedCols>
+          <StdOutField>ProcessRunnerStdOut</StdOutField>
+          <RetCodeField>ProcessRunnerReturnCode</RetCodeField>
+          <ExceptionField>ProcessRunnerException</ExceptionField>
+          <Diags>Y</Diags>
+          <AutoEscape>Y</AutoEscape>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>ProcessRunner</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="ContinuumProcessRunner.dll" EngineDllEntryPoint=".Net:ContinuumProcessRunner.ProcessRunnerNetPlugin" />
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="510" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_12968_54bb790d8a6f44d6aba7dff2f29aa180_\Engine_12172_c6113ec31d94421bb29b4ced2d8e1c4b_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -95,36 +110,14 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
-    <Node ToolID="5">
-      <GuiSettings Plugin="ContinuumProcessRunner.ProcessRunner">
-        <Position x="210" y="54" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <ExePathField>ColA</ExePathField>
-          <SelectedCols>ColA,ColB,ColC,Col D</SelectedCols>
-          <StdOutField>ProcessRunnerStdOut</StdOutField>
-          <RetCodeField>ProcessRunnerReturnCode</RetCodeField>
-          <ExceptionField>ProcessRunnerException</ExceptionField>
-          <Diags>N</Diags>
-          <AutoEscape>Y</AutoEscape>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText>ProcessRunner</DefaultAnnotationText>
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="ContinuumProcessRunner.dll" EngineDllEntryPoint=".Net:ContinuumProcessRunner.ProcessRunnerNetPlugin" />
-    </Node>
   </Nodes>
   <Connections>
     <Connection>
-      <Origin ToolID="2" Connection="Output" />
-      <Destination ToolID="5" Connection="Input" />
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="5" Connection="Output" />
+      <Origin ToolID="3" Connection="Output" />
       <Destination ToolID="4" Connection="Input" />
     </Connection>
   </Connections>
@@ -146,7 +139,7 @@
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>ProcessRunnerTest_Simple</Name>
+      <Name>ProcessRunnerTest_Macro</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

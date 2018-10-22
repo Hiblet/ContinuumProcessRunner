@@ -349,3 +349,6 @@ Beta; Added secret options to turn Diagnostics on/off, and switch for autoEscape
 
 #### v1.0.6
 Beta; Added SelectedCols control, to selectively pass columns to the command line.
+
+#### v1.0.7
+Beta; Record copy process updated to handle non-string types, such as Blob type.
