@@ -32,11 +32,10 @@ namespace ContinuumProcessRunner
         private string _stdOutField = Constants.DEFAULTSTDOUTFIELD;
         private string _retCodeField = Constants.DEFAULTRETCODEFIELD;
         private string _exceptionsField = Constants.DEFAULTEXCEPTIONFIELD;
-        private string _diagsField = Constants.DEFAULTDIAGSFIELD;
+        private string _diagnosticField = Constants.DEFAULTDIAGNOSTICFIELD;
         private string _selectedCols = Constants.DEFAULTSELECTEDCOLS;
 
         private string _cmdLine = "";
-        private string _diags = "N";
         private string _autoEscape = "Y";
         private string _retCode = "";        
 
@@ -51,6 +50,8 @@ namespace ContinuumProcessRunner
 
         public void PI_Init(int nToolID, EngineInterface engineInterface, XmlElement pXmlProperties)
         {
+            DebugMessage($"PI_Init() Entering; ToolID={_toolID}");
+
             _toolID = nToolID;
             _engineInterface = engineInterface;
             _xmlProperties = pXmlProperties;
@@ -65,59 +66,76 @@ namespace ContinuumProcessRunner
                 getConfigSetting(configElement, Constants.STDOUTFIELDKEY, ref _stdOutField);
                 getConfigSetting(configElement, Constants.RETCODEFIELDKEY, ref _retCodeField);
                 getConfigSetting(configElement, Constants.EXCEPTIONFIELDKEY, ref _exceptionsField);
+                getConfigSetting(configElement, Constants.DIAGNOSTICFIELDKEY, ref _diagnosticField);
 
-                getConfigSetting(configElement, Constants.DIAGSKEY, ref _diags);
                 getConfigSetting(configElement, Constants.AUTOESCAPEKEY, ref _autoEscape);
 
                 getConfigSetting(configElement, Constants.SELECTEDCOLSKEY, ref _selectedCols);
             }
 
             _outputHelper = new AlteryxRecordInfoNet.PluginOutputConnectionHelper(_toolID, _engineInterface);
+
+            DebugMessage($"PI_Init() Exiting; ToolID={_toolID}");
         }
 
 
         public IIncomingConnectionInterface PI_AddIncomingConnection(string pIncomingConnectionType, string pIncomingConnectionName)
         {
+            DebugMessage($"PI_AddIncomingConnection() has been called; Name={pIncomingConnectionName}");
             return this;
         }
 
         public bool PI_AddOutgoingConnection(string pOutgoingConnectionName, OutgoingConnection outgoingConnection)
         {
             _outputHelper.AddOutgoingConnection(outgoingConnection);
+            DebugMessage($"PI_AddOutgoingConnection() has been called; Name={pOutgoingConnectionName}");
             return true;
         }
 
         public bool PI_PushAllRecords(long nRecordLimit)
         {
+            // Should not be called
+            DebugMessage($"PI_PushAllRecords() has been called; THIS SHOULD NOT BE CALLED FOR A TOOL WITH AN INPUT CONNECTION!");
             return true;
         }
 
         public void PI_Close(bool bHasErrors)
         {
             _outputHelper.Close();
+            DebugMessage("PI_Close() has been called; OutputHelper has been closed.");
         }
-
+        
         public bool ShowDebugMessages()
         {
+#if DEBUG
             return true;
+#else
+            return false;      
+#endif
         }
 
 
         public XmlElement II_GetPresortXml(XmlElement pXmlProperties)
         {
+            DebugMessage($"II_GetPresortXml() has been called");
             return null;
         }
 
         public bool II_Init(RecordInfo recordInfo)
         {
+            DebugMessage($"II_Init() Entering; ToolID={_toolID}");
+
             _recordInfoIn = recordInfo;
-            //prepRecordInfoOut(); // This allows zero record run to succeed and fixes problem with downstream tool complaining about a stream not being initialized.
-            prep();
+            prep(); // This allows zero record run to succeed and fixes problem with downstream tool complaining about a stream not being initialized.
+
+            DebugMessage($"II_Init() Exiting; ToolID={_toolID}; prep() should have completed.");
             return true;
         }
 
         public void II_Close()
-        { }
+        {
+            DebugMessage("II_Close() has been called.");
+        }
 
         public void II_UpdateProgress(double dPercent)
         {
@@ -131,11 +149,15 @@ namespace ContinuumProcessRunner
 
             // Have the PluginOutputConnectionHelper ask the downstream tools to update their progress.
             _outputHelper.UpdateProgress(dPercent);
+
+            DebugMessage($"II_UpdateProgress() has been called; dPercent={dPercent}");
         }
 
 
         public bool II_PushRecord(RecordData recordDataIn)
         {
+            DebugMessage($"II_PushRecord() Entering; ToolID={_toolID}");
+
             // The same object is used in each call, so reset the result fields before using them.
             _retCode = "";
             _cmdLine = "";
@@ -182,11 +204,9 @@ namespace ContinuumProcessRunner
             AlteryxRecordInfoNet.FieldBase fbExceptions = _recordInfoOut[numInputFields + 2];
             fbExceptions.SetFromString(recordOut, exceptions);
 
-            if (isTrueString(_diags))
-            {
-                AlteryxRecordInfoNet.FieldBase fbDiags = _recordInfoOut[numInputFields + 3];
-                fbDiags.SetFromString(recordOut, _cmdLine);
-            }
+            AlteryxRecordInfoNet.FieldBase fbDiagnostics = _recordInfoOut[numInputFields + 3];
+            fbDiagnostics.SetFromString(recordOut, _cmdLine);
+
 
             // Output
             _outputHelper.PushRecord(recordOut.GetRecord());
@@ -198,6 +218,7 @@ namespace ContinuumProcessRunner
             lock (_sbStdOutLock) { _sbStdOut.Clear(); }
             lock (_sbExceptionsLock) { _sbExceptions.Clear(); }
 
+            DebugMessage($"II_PushRecord() Exiting; ToolID={_toolID}");
             return true;
         }
 
@@ -264,9 +285,7 @@ namespace ContinuumProcessRunner
             _recordInfoOut.AddField(_stdOutField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");
             _recordInfoOut.AddField(_retCodeField, FieldType.E_FT_V_WString, Constants.SMALLOUTPUTFIELDSIZE, 0, "", "");
             _recordInfoOut.AddField(_exceptionsField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");
-
-            if (isTrueString(_diags))            
-                _recordInfoOut.AddField(_diagsField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");            
+            _recordInfoOut.AddField(_diagnosticField, FieldType.E_FT_V_WString, Constants.LARGEOUTPUTFIELDSIZE, 0, "", "");            
         }
 
 
@@ -413,6 +432,22 @@ namespace ContinuumProcessRunner
                     break;
             }
             return false;
+        }
+
+
+        
+        
+        //////////////////////// 
+        // Message Boilerplate
+
+        public void Message(string message, MessageStatus messageStatus = MessageStatus.STATUS_Info)
+        {
+            this._engineInterface?.OutputMessage(this._toolID, messageStatus, message);
+        }
+
+        public void DebugMessage(string message)
+        {
+            if (ShowDebugMessages()) this.Message(message);
         }
     }
 }

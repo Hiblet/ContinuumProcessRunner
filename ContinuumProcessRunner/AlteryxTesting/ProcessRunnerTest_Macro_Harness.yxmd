@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="42" y="30" width="480" height="84" />
+        <Position x="54" y="54" width="480" height="84" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -23,7 +23,7 @@
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
-        <Position x="534" y="234" />
+        <Position x="546" y="258" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -53,17 +53,22 @@
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="834" y="174" />
+        <Position x="846" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_14168_54938e5c963440c98b4409410c4861ea_\Engine_12172_00e00cb57beb41f9b096ba2eab5fe706_.yxdb</TempFile>
+          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_8816_2a9f81ef6652450c88e3d17736c49c6a_\Engine_4356_9bd4e98897614800938dc064ee556d5a_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -76,7 +81,7 @@
     </Node>
     <Node ToolID="5">
       <GuiSettings>
-        <Position x="714" y="234" />
+        <Position x="726" y="258" />
       </GuiSettings>
       <Properties>
         <Configuration>

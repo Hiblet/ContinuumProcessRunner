@@ -73,7 +73,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_2880_2d6067b8aba94a6883b86b13c8e41e5b_\Engine_9076_bb056cc4fe934fef8472bf32f2fae6ab_.yxdb</TempFile>
+          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_14416_993a006ea33c4cc29ebf07dc69412935_\Engine_14416_215c9027742e4f58911276b547b28309_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -102,9 +102,12 @@
       <Properties>
         <Configuration>
           <ExePathField>ColA</ExePathField>
+          <SelectedCols>ColA,ColB,ColC,Col D</SelectedCols>
+          <AutoEscape>Y</AutoEscape>
           <StdOutField>ProcessRunnerStdOut</StdOutField>
           <RetCodeField>ProcessRunnerReturnCode</RetCodeField>
           <ExceptionField>ProcessRunnerException</ExceptionField>
+          <DiagnosticField>ProcessRunnerDiagnostics</DiagnosticField>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />

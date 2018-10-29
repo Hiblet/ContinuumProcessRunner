@@ -57,6 +57,5 @@ namespace ContinuumProcessRunner
             return new AlteryxGuiToolkit.Plugins.Connection[] { new AlteryxGuiToolkit.Plugins.Connection("Output") };
         }
 
-
     }
 }

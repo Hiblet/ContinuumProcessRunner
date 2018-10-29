@@ -14,7 +14,7 @@ namespace ContinuumProcessRunner
         public static string STDOUTFIELDKEY = "StdOutField";
         public static string RETCODEFIELDKEY = "RetCodeField";
         public static string EXCEPTIONFIELDKEY = "ExceptionField";
-        public static string DIAGSKEY = "Diags";
+        public static string DIAGNOSTICFIELDKEY = "DiagnosticField";
         public static string AUTOESCAPEKEY = "AutoEscape";
         public static string SELECTEDCOLSKEY = "SelectedCols";
 
@@ -23,8 +23,7 @@ namespace ContinuumProcessRunner
         public static string DEFAULTSTDOUTFIELD = "ProcessRunnerStdOut";
         public static string DEFAULTRETCODEFIELD = "ProcessRunnerReturnCode";
         public static string DEFAULTEXCEPTIONFIELD = "ProcessRunnerException";
-        public static string DEFAULTDIAGSFIELD = "ProcessRunnerDiagnostics";
-        public static string DEFAULTDIAGS = "N";
+        public static string DEFAULTDIAGNOSTICFIELD = "ProcessRunnerDiagnostics";
         public static string DEFAULTAUTOESCAPE = "Y";
         public static string DEFAULTSELECTEDCOLS = "##ALLCOLUMNS##";
         public static string ZEROSELECTEDCOLS = "##NOCOLUMNS##";
