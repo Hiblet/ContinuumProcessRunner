@@ -15,6 +15,10 @@ When any executable completes, it sends back a return code.  This is usually 0 f
 
 Also, if the spawned process errors or throws an exception, the errors are trapped and directly reported to another new column.  This is achieved by monitoring what the executable writes to the Standard Error output stream.
 
+A Diagnostics column is added to the results to show the actual command that was used to spawn the process.  This is because many executable processes are extremely inflexible in how they process command line variables, and you, the user, need to be able to see what data you are passing, including formatting.  
+
+The tool has the option to "Auto Escape" your parameters.  For example, if a column has some a data string that contains a space, the auto escape function will put quotes around the string on the command line so that the string is passed as a single string.  If the Auto Escape function is turned off, the string will be passed exactly as you have it in the data field, with no quotes, and the command line executable will probably interpret the data as two distinct strings.  The Diagnostic field will show you what is being passed on the command line, to allow you to tailor your data to the exact requirements of the executable.
+
 Each Alteryx row can refer to a different executable, so you can run either different versions of programs (as in different Python versions), or completely distinct, unrelated executables, from the same table data.  Each executable must complete before the next is called, so you can chain calls to a series of different executables together.
 
 
@@ -52,7 +56,7 @@ This tool avoids the problem by using asynchronous events to listen to the outpu
 
 The input parameters are passed as command line arguments to the executable, in Alteryx column order, as Strings.  You can select the columns to pass to the command line, and all other columns are ignored and just pass through the tool.
 
-The output and error columns are currently sized at 1073741823 characters (Int32.MaxValue bytes, 2 bytes per char), and the return code is a generous 256 characters, considering that the code should be a single numeric digit.
+The output, error and diagnostic columns are currently sized at 1073741823 characters (Int32.MaxValue bytes, 2 bytes per char), and the return code is a generous 256 characters, considering that the code should be a single numeric digit.
 
 
 
@@ -100,7 +104,7 @@ The tool requires you to select the text column that contains the path to the ex
 
 This can be a relative path definition, but the path may be relative to where the plug-in is running (C:\Program Files\Alteryx\bin\Plugins\ContinuumProcessRunner) rather than where the workflow is saved.  To be safe, just use a full path, from the root of C: downwards (or D:, whatever).
 
-Next is the SelectedCols box, and here you tick the box for every column that you want to pass to your command line executable.  The arguments are passed as strings, in the order of that the columns appear in the Alteryx row.  Data is automatically escaped, so if you have a column with the string...
+Next is the SelectedCols box, and here you tick the box for every column that you want to pass to your command line executable.  The arguments are passed as strings, in the order of that the columns appear in the Alteryx row.  Data is by default automatically escaped, so if you have a column with the string...
 
 ```
     My Data
@@ -111,12 +115,12 @@ Next is the SelectedCols box, and here you tick the box for every column that yo
 ```
     c:\users\user\myProgram.exe "My Data"
 ```
-... because if it was passed literally, the receiving executable would process it as two distinct text parameters, "My" and "Data".
+... because if it was passed literally, the receiving executable would process it as two distinct text parameters, "My" and "Data".  Unchecking the Auto Escape box turns off this feature, if required.
 
 
 ## Output
 
-The tool has three output columns, "Std Out", "Return Code" and "Exceptions", which you can rename.
+The tool has four output columns, "Std Out", "Return Code", "Exceptions" and "Diagnostics", which you can rename.
 
 "Std Out" is the column that will receive the printed output from your spawned process.
 
@@ -124,22 +128,22 @@ The tool has three output columns, "Std Out", "Return Code" and "Exceptions", wh
 
 "Exceptions" is the column that will receive whatever the application returns on the Standard Error stream, which is where most exceptions and errors will be sent.
 
+"Diagnostics" is a column that shows how the spawn command line string looked when the executable was called.  If the executable did not function as you expected, you can examine the call and see if the data passed on the command line is what you expected.  If necessary, you can munge the data in Alteryx to shape it correctly, and if necessary turn off the Auto Escape feature, and take full control of what is applied to the command line.  If you are having great difficulty, you can pass a single column, turn off auto escaping, and shape a single string to be your command line parameters in Alteryx.  As usual with Alteryx, there are many ways to skin the cat.
+
 Executables are called synchronously (one at a time) in row order, and must complete before the next row is called.  If the executable is bugged and loops forever, the workflow will stall at that executable indefinitely.
 
 Columns that are not the executable path are sent to the command line as parameters, in column order.
 
-I would suggest making the executable the first column.  If the exe runs a script, make the script path the second column, and then all subsequent columns can be your command line input data.
+I would suggest making the executable the first column.  If the exe runs a script, make the script path the second column, and then all subsequent columns can be your command line input data.  
 
 
 ## Diagnostics
 
-An Alteryx workflow is an XML format data file.  In the configuration for the ProcessRunner tool are two switches that allow you to add some diagnostics, for when you have problems.
+There are two features that will help you get ProcessRunner working with your selected executables.
 
-The first is AutoEscape, which is defaulted to "Y".  This makes the tool escape your command line arguments by default.  However, you may want to have more control and turn off this feature, so that you pass exactly what you have in your flow data cells to your command line executable.  To turn off auto escaping, set the flag to "N", and then the tool will not put quotes around strings that have spaces.
+The first is Auto Escape, which is defaulted to true, checked.  This makes the tool escape your command line arguments by default.  However, you may want to have more control and turn off this feature, so that you pass exactly what you have in your flow data cells to your command line executable.  To turn off auto escaping, uncheck the Auto Escape checkbox, and then the tool will not put quotes around strings that have spaces.
 
-The second is Diags, which defaults to "N".  When Diags is set to "Y", a diagnostic column is added to the output.  This column has the command line executable and the parameters that the tool tried to use to spawn the new process.  If you are having problems getting your data into your process correctly, you can see what the tool is doing using this Diags column.
-
-These two features are hidden away to keep the tool configuration screen as clean as possible.  
+The second is the Diagnostics column.  As mentioned above, this shows the string that the tool uses to spawn the executable.  You should be able to take the string, copy it, and manually call the executable from the DOS prompt, and get the exact behaviour that you see in ProcessRunner.
 
 
 ### Example A: Python Scripts
@@ -172,13 +176,13 @@ The tool would be configured such that the Exe Path drop down box is pointed to 
 The result of running this data through the tool would be this:
 
 ```
-----------------------------------------------------------------------------------------------------------------------------------------
-|ExecutablePath          |ScriptPath                |Name      |Age |ProcessRunnerStdOut|ProcessRunnerReturnCode|ProcessRunnerException|
-----------------------------------------------------------------------------------------------------------------------------------------
-|C:/Python37/python.exe  |C:/MyScripts/Test1.py     |Steve     |  50|This is the name...|0                      |                      |
-|C:/Python26/python.exe  |C:/OldScripts/Test2.py    |Alice     |  21|This is the name...|0                      |                      |
-|C:/Python37/python.exe  |C:/MyScripts/Test3.py     |Bob Smith |  32|This is the name...|0                      |                      |
-----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|ExecutablePath          |ScriptPath                |Name      |Age |ProcessRunnerStdOut|ProcessRunnerReturnCode|ProcessRunnerException|ProcessRunnerDiagnostics                                   |
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|C:/Python37/python.exe  |C:/MyScripts/Test1.py     |Steve     |  50|This is the name...|0                      |                      |C:/Python37/python.exe C:/MyScripts/Test1.py Steve 50      |
+|C:/Python26/python.exe  |C:/OldScripts/Test2.py    |Alice     |  21|This is the name...|0                      |                      |C:/Python26/python.exe C:/OldScripts/Test2.py Alice 21     |
+|C:/Python37/python.exe  |C:/MyScripts/Test3.py     |Bob Smith |  32|This is the name...|0                      |                      |C:/Python37/python.exe C:/MyScripts/Test3.py "Bob Smith" 32|
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 The ProcessRunnerStdOut column would have a red triangle tag indicating that the cell has embedded returns within it.
@@ -196,7 +200,8 @@ This tells us that the Python executable successfully fired up the script as the
 The script ran and reported the passed in script name (argv[0]), and the number of variables received, and the actual variables received on the command line.
 The three print statements in the script resulted in 3 separate lines in the output data cell.
 
-For the third row, "Bob Smith" is the name, and this has a space in it.  The tool detects the space, and quotes the string, so that only 3 variables are passed.
+For the third row, "Bob Smith" is the name, and this has a space in it.  The tool detects the space, and quotes the string, so that only 3 variables are passed; The script, and the two parameters.  
+Note that if Auto Escape is turned off, the quotes would not be applied to the name, and the executable would be called with the script and three parameters [Bob,Smith,32].
 
 If one of the scripts raises an exception, the ProcessRunnerReturnCode would be "1", and the ProcessRunnerException cell would contain the exception received.  ProcessRunnerStdOut would contain all data received up to the exception, so any print statements executed before failure would be passed through.
 
@@ -236,11 +241,11 @@ The thing that follows "/c" is the name of the batch file to run, and the final 
 The result of running this data through the tool would be this:
 
 ```
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-|ExecutablePath              |Parameter1 |Parameter2                                     |Parameter3 |ProcessRunnerStdOut  |ProcessRunnerReturnCode |ProcessRunnerException |
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-|C:\Windows\System32\cmd.exe |/c         |C:\Users\user\documents\batchfiles\mybatch.bat |Testing!   |Parameter 1:Testing! |0                       |                       |
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|ExecutablePath              |Parameter1 |Parameter2                                     |Parameter3 |ProcessRunnerStdOut  |ProcessRunnerReturnCode |ProcessRunnerException |ProcessRunnerDiagnostics                                                              |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|C:\Windows\System32\cmd.exe |/c         |C:\Users\user\documents\batchfiles\mybatch.bat |Testing!   |Parameter 1:Testing! |0                       |                       |C:\Windows\System32\cmd.exe /c C:\Users\user\documents\batchfiles\mybatch.bat Testing!|
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 The ProcessRunnerStdOut column would have a red triangle tag indicating that the cell has embedded returns within it.
@@ -285,11 +290,11 @@ The tool would be configured such that the Exe Path drop down box is pointed to 
 The result of running this data through the tool would be this:
 
 ```
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-|ExecutablePath                                            |Parameter1                                  |Param2 |Param3 |ProcessRunnerStdOut           |ProcessRunnerReturnCode |ProcessRunnerException |
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-|C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe |C:\users\user\documents\powershell\myPS.ps1 |Alpha  |Beta   |Hello World! From Powershell! |0                       |                       |
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|ExecutablePath                                            |Parameter1                                  |Param2 |Param3 |ProcessRunnerStdOut           |ProcessRunnerReturnCode |ProcessRunnerException |ProcessRunnerDiagnostics                                                                                        |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe |C:\users\user\documents\powershell\myPS.ps1 |Alpha  |Beta   |Hello World! From Powershell! |0                       |                       |C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe C:\users\user\documents\powershell\myPS.ps1 Alpha Beta|
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 The ProcessRunnerStdOut column would have a red triangle tag indicating that the cell has embedded returns within it.
@@ -304,6 +309,14 @@ Beta
 ```
 
 This shows us that the script received two arguments, as expected.  The process exited gracefully, and there were no exceptions.
+
+
+## Known Issues
+
+### Macro Unfriendliness
+
+There is currently a problem when the ProcessRunner tool is wrapped in a macro.  This is under active investigation.
+The tool appears to run correctly, but a Browse tool downstream of ProcessRunner errors.
 
 
 ## Contact
@@ -352,3 +365,9 @@ Beta; Added SelectedCols control, to selectively pass columns to the command lin
 
 #### v1.0.7
 Beta; Record copy process updated to handle non-string types, such as Blob type.
+
+#### v1.0.8
+Beta; Auto Escape and Diagnostics features made accessible via configuration screen.
+
+#### v1.0.9
+Beta; Internal tidying of variable names.  Additional info returned in debug version.

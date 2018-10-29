@@ -14,9 +14,9 @@ namespace ContinuumProcessRunner
         public string StdOutField { get; private set; }
         public string RetCodeField { get; private set; }
         public string ExceptionField { get; private set; }
+        public string DiagnosticField { get; private set; }
 
         // Switches (Y/N)
-        public string Diags { get; private set; }
         public string AutoEscape { get; private set; }
 
         public string SelectedCols { get; private set; }
@@ -29,7 +29,7 @@ namespace ContinuumProcessRunner
             string stdOutField,
             string retCodeField,
             string exceptionField,
-            string diags,
+            string diagnosticField,
             string autoEscape,
             string selectedCols)
         {
@@ -37,7 +37,7 @@ namespace ContinuumProcessRunner
             StdOutField = stdOutField;
             RetCodeField = retCodeField;
             ExceptionField = exceptionField;
-            Diags = diags;
+            DiagnosticField = diagnosticField;
             AutoEscape = autoEscape;
             SelectedCols = selectedCols;
         }
@@ -62,8 +62,8 @@ namespace ContinuumProcessRunner
             string stdOutField = getStringFromConfig(eConfig, Constants.STDOUTFIELDKEY, Constants.DEFAULTSTDOUTFIELD);
             string retCodeField = getStringFromConfig(eConfig, Constants.RETCODEFIELDKEY, Constants.DEFAULTRETCODEFIELD);
             string exceptionField = getStringFromConfig(eConfig, Constants.EXCEPTIONFIELDKEY, Constants.DEFAULTEXCEPTIONFIELD);
+            string diagnosticField = getStringFromConfig(eConfig, Constants.DIAGNOSTICFIELDKEY, Constants.DEFAULTDIAGNOSTICFIELD);
 
-            string diags = getStringFromConfig(eConfig, Constants.DIAGSKEY, Constants.DEFAULTDIAGS);
             string autoEscape = getStringFromConfig(eConfig, Constants.AUTOESCAPEKEY, Constants.DEFAULTAUTOESCAPE);
             string selectedCols = getStringFromConfig(eConfig, Constants.SELECTEDCOLSKEY, Constants.DEFAULTSELECTEDCOLS);
 
@@ -72,7 +72,7 @@ namespace ContinuumProcessRunner
                 stdOutField, 
                 retCodeField, 
                 exceptionField,
-                diags,
+                diagnosticField,
                 autoEscape,
                 selectedCols);
         }

@@ -2,44 +2,33 @@
 <AlteryxDocument yxmdVer="2018.3">
   <Nodes>
     <Node ToolID="1">
-      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="42" y="30" width="480" height="84" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Text>Workflow: Harness totTest ProcessRunner wrapped in a macro.</Text>
-          <Font name="Arial" size="8.25" style="0" />
-          <TextColor name="Black" />
-          <FillColor name="White" />
-          <Shape shape="0" />
-          <Justification Justification="3" />
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-    </Node>
-    <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
-        <Position x="534" y="234" />
+        <Position x="282" y="102" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <NumRows value="2" />
+          <NumRows value="6" />
           <Fields>
-            <Field name="Farm" />
-            <Field name="Pet" />
+            <Field name="Wait" />
           </Fields>
           <Data>
             <r>
-              <c>Sheep</c>
-              <c>Budgie</c>
+              <c>10</c>
             </r>
             <r>
-              <c>Cow</c>
-              <c>Tortoise</c>
+              <c>10</c>
+            </r>
+            <r>
+              <c>10</c>
+            </r>
+            <r>
+              <c>10</c>
+            </r>
+            <r>
+              <c>10</c>
+            </r>
+            <r>
+              <c>10</c>
             </r>
           </Data>
         </Configuration>
@@ -51,19 +40,44 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTextInput" />
     </Node>
-    <Node ToolID="4">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="834" y="174" />
+    <Node ToolID="2">
+      <GuiSettings>
+        <Position x="582" y="102" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_14168_54938e5c963440c98b4409410c4861ea_\Engine_12172_00e00cb57beb41f9b096ba2eab5fe706_.yxdb</TempFile>
+          <Value name="Input.Input"><![CDATA[WaitTimes=Wait
+]]></Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+      </Properties>
+      <EngineSettings Macro="ProcessRunnerTest_Wait_Macro.yxmc" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="678" y="42" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\User\AppData\Local\Temp\Engine_17972_6b2a0f620e7945f9ae1fd52a8b8b1e9b_\Engine_7720_9b0da59ff36f4ecf877f29fa40c6472e_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -74,34 +88,40 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
-    <Node ToolID="5">
-      <GuiSettings>
-        <Position x="714" y="234" />
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="438" y="102" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Value name="Input.Input"><![CDATA[ColD=Farm
-ColE=Pet
-]]></Value>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="Wait" selected="True" type="Int32" size="4" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name>ProcessRunnerTest_Macro (3)</Name>
-          <AnnotationText>ProcessRunner in a Macro</AnnotationText>
+          <Name />
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
       </Properties>
-      <EngineSettings Macro="ProcessRunnerTest_Macro.yxmc" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
     </Node>
   </Nodes>
   <Connections>
     <Connection>
-      <Origin ToolID="2" Connection="Output" />
-      <Destination ToolID="5" Connection="Input" />
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="5" Connection="Output" />
-      <Destination ToolID="4" Connection="Input" />
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
@@ -122,7 +142,7 @@ ColE=Pet
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>ProcessRunnerTest_Macro_Harness</Name>
+      <Name>ProcessRunnerTest_Wait_Macro_Harness</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

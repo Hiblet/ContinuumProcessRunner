@@ -20,17 +20,18 @@ namespace ContinuumProcessRunner
         public static string TIP_STDOUT = "[REQUIRED]\r\nSet a name for the field to record the redirected Standard Output from the executable (usually what the Executable prints)";
         public static string TIP_RETCODE = "[REQUIRED]\r\nSet a name for the field to record the exit code from the executable\r\n(usually 0=Success, and other values are error codes)";
         public static string TIP_EXCEPTIONS = "[REQUIRED]\r\nSet a name for the field to record any exceptions (errors) that the executable throws";
+        public static string TIP_DIAGNOSTICS = "[REQUIRED]\r\nSet a name for the field to report the exact string used to spawn the process.";
         public static string TIP_SELECTEDCOLS = "Checked columns will be converted to string and passed as command line arguments.\r\nThe ExePath column will not be passed, it will be ignored regardless of check state.";
         public static string TIP_SELECTEDCOLS_ALL = "Set all columns as Checked.";
         public static string TIP_SELECTEDCOLS_NONE = "Reset all columns to Unchecked.";
         public static string TIP_SELECTEDCOLS_INVERT = "Reverse the checks for all columns.";
         public static string TIP_SELECTEDCOLS_FORGET = "Remove columns that are marked as missing.";
-
-
+        public static string TIP_CHECKBOX_AUTOESCAPE = "Check to make the tool escape command line parameters,\r\nsuch as wrapping strings containing spaces in quotes.\r\nUncheck to handle this manually yourself.";
+        
         public static string MISSING = " (Missing)";
 
-        private static string diags = Constants.DEFAULTDIAGS;
-        private static string autoEscape = Constants.DEFAULTAUTOESCAPE;
+
+
 
         public ProcessRunnerUserControl()
         {
@@ -54,6 +55,9 @@ namespace ContinuumProcessRunner
             toolTip1.SetToolTip(labelExceptionField, TIP_EXCEPTIONS);
             toolTip1.SetToolTip(textBoxExceptionField, TIP_EXCEPTIONS);
 
+            toolTip1.SetToolTip(labelDiagnosticField, TIP_DIAGNOSTICS);
+            toolTip1.SetToolTip(textBoxDiagnosticField, TIP_DIAGNOSTICS);
+
             toolTip1.SetToolTip(labelSelectedCols, TIP_SELECTEDCOLS);
             toolTip1.SetToolTip(checkedListBoxSelectedCols, TIP_SELECTEDCOLS);
 
@@ -61,6 +65,9 @@ namespace ContinuumProcessRunner
             toolTip1.SetToolTip(linkLabelNone, TIP_SELECTEDCOLS_NONE);
             toolTip1.SetToolTip(linkLabelInvert, TIP_SELECTEDCOLS_INVERT);
             toolTip1.SetToolTip(linkLabelForget, TIP_SELECTEDCOLS_FORGET);
+
+            toolTip1.SetToolTip(labelAutoEscapeCheckbox, TIP_CHECKBOX_AUTOESCAPE);
+            toolTip1.SetToolTip(checkBoxAutoEscape, TIP_CHECKBOX_AUTOESCAPE);
         }
 
         public Control GetConfigurationControl(
@@ -87,6 +94,13 @@ namespace ContinuumProcessRunner
             setComboBox(comboBoxExePathField, xmlConfig, Constants.EXEPATHFIELDKEY, eIncomingMetaInfo);
 
 
+            /////////////
+            // CHECKBOX
+            //
+
+            setCheckbox(checkBoxAutoEscape, xmlConfig, Constants.AUTOESCAPEKEY, eIncomingMetaInfo);
+
+
             /////////////////////////
             // SELECTED COLUMNS BOX
             //
@@ -101,13 +115,18 @@ namespace ContinuumProcessRunner
             textBoxStdOutField.Text = xmlConfig.StdOutField;
             textBoxRetCodeField.Text = xmlConfig.RetCodeField;
             textBoxExceptionField.Text = xmlConfig.ExceptionField;
-
-
-            // Secrets
-            diags = xmlConfig.Diags;
-            autoEscape = xmlConfig.AutoEscape;
+            textBoxDiagnosticField.Text = xmlConfig.DiagnosticField;
 
             return this;
+        }
+
+        private void saveSubForCheckbox(CheckBox cb, XmlElement eConfig, string key, string valueDefault)
+        {
+            XmlElement xe = XmlHelpers.GetOrCreateChildNode(eConfig, key);
+            if (cb.Checked == true)
+                xe.InnerText = "Y";
+            else
+                xe.InnerText = "N";
         }
 
         private void saveSubForComboBox(ComboBox cbox, XmlElement eConfig, string key, string valueDefault)
@@ -146,6 +165,8 @@ namespace ContinuumProcessRunner
 
             saveSubForCheckedListBox(checkedListBoxSelectedCols, eConfig, Constants.SELECTEDCOLSKEY);
 
+            saveSubForCheckbox(checkBoxAutoEscape, eConfig, Constants.AUTOESCAPEKEY, Constants.DEFAULTAUTOESCAPE);
+
             // Output Fields
             XmlElement xe = XmlHelpers.GetOrCreateChildNode(eConfig, Constants.STDOUTFIELDKEY);
             string stdOutField = textBoxStdOutField.Text;
@@ -159,15 +180,12 @@ namespace ContinuumProcessRunner
             string exceptionField = textBoxExceptionField.Text;
             xe.InnerText = string.IsNullOrWhiteSpace(exceptionField) ? Constants.DEFAULTEXCEPTIONFIELD : exceptionField;
 
+            xe = XmlHelpers.GetOrCreateChildNode(eConfig, Constants.DIAGNOSTICFIELDKEY);
+            string diagnosticField = textBoxDiagnosticField.Text;
+            xe.InnerText = string.IsNullOrWhiteSpace(diagnosticField) ? Constants.DEFAULTDIAGNOSTICFIELD : diagnosticField;
+
             // Set the default annotation.
             strDefaultAnnotation = "ProcessRunner";
-
-            // Save the secret flags
-            xe = XmlHelpers.GetOrCreateChildNode(eConfig, Constants.DIAGSKEY);            
-            xe.InnerText = string.IsNullOrWhiteSpace(diags) ? Constants.DEFAULTDIAGS : diags;
-
-            xe = XmlHelpers.GetOrCreateChildNode(eConfig, Constants.AUTOESCAPEKEY);
-            xe.InnerText = string.IsNullOrWhiteSpace(autoEscape) ? Constants.DEFAULTAUTOESCAPE : autoEscape;
         }
 
 
@@ -257,6 +275,25 @@ namespace ContinuumProcessRunner
             }
         }
 
+        private void setCheckbox(CheckBox cb, XmlInputConfiguration xmlConfig, string key, XmlElement[] eIncomingMetaInfo)
+        {
+            string setting = (string)xmlConfig[key] ?? Constants.DEFAULTAUTOESCAPE; // Get the data held in the config (Y/N)
+
+            if (isTrueString(setting))
+                cb.Checked = true;
+            else
+                cb.Checked = false;
+        }
+
+        private bool isTrueString(string setting)
+        {
+            if (String.Equals(setting, "Y", StringComparison.OrdinalIgnoreCase)) return true;
+            if (String.Equals(setting, "1", StringComparison.OrdinalIgnoreCase)) return true;
+            if (String.Equals(setting, "true", StringComparison.OrdinalIgnoreCase)) return true;
+
+            return false;
+        }
+
         private void setComboBox(ComboBox cbox, XmlInputConfiguration xmlConfig, string key, XmlElement[] eIncomingMetaInfo)
         {
             string target = (string)xmlConfig[key];
@@ -297,9 +334,7 @@ namespace ContinuumProcessRunner
         }
 
         private void checkedListBoxSelectedCols_Click(object sender, EventArgs e)
-        {
-            var dummy = false;
-        }
+        { }
 
         private void checkedListBoxSelectedCols_ItemCheck(object sender, EventArgs e)
         {

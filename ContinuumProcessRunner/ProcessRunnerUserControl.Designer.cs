@@ -56,6 +56,12 @@
             this.linkLabelAll = new System.Windows.Forms.LinkLabel();
             this.labelSelectedCols = new System.Windows.Forms.Label();
             this.checkedListBoxSelectedCols = new System.Windows.Forms.CheckedListBox();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.checkBoxAutoEscape = new System.Windows.Forms.CheckBox();
+            this.labelAutoEscapeCheckbox = new System.Windows.Forms.Label();
+            this.panel10 = new System.Windows.Forms.Panel();
+            this.textBoxDiagnosticField = new System.Windows.Forms.TextBox();
+            this.labelDiagnosticField = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -64,6 +70,8 @@
             this.panel9.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.panel10.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -83,7 +91,7 @@
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(38, 12);
             this.labelVersion.TabIndex = 1;
-            this.labelVersion.Text = "(v1.0.7)";
+            this.labelVersion.Text = "(v1.0.9)";
             // 
             // labelHeader
             // 
@@ -141,7 +149,7 @@
             // 
             this.panel7.Controls.Add(this.textBoxStdOutField);
             this.panel7.Controls.Add(this.labelStdOutField);
-            this.panel7.Location = new System.Drawing.Point(0, 270);
+            this.panel7.Location = new System.Drawing.Point(0, 300);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(300, 30);
             this.panel7.TabIndex = 6;
@@ -166,7 +174,7 @@
             // 
             this.panel8.Controls.Add(this.textBoxRetCodeField);
             this.panel8.Controls.Add(this.labelRetCodeField);
-            this.panel8.Location = new System.Drawing.Point(0, 300);
+            this.panel8.Location = new System.Drawing.Point(0, 330);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(300, 30);
             this.panel8.TabIndex = 7;
@@ -191,7 +199,7 @@
             // 
             this.panel9.Controls.Add(this.textBoxExceptionField);
             this.panel9.Controls.Add(this.labelExceptionField);
-            this.panel9.Location = new System.Drawing.Point(0, 330);
+            this.panel9.Location = new System.Drawing.Point(0, 360);
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(300, 30);
             this.panel9.TabIndex = 8;
@@ -215,7 +223,7 @@
             // panel4
             // 
             this.panel4.Controls.Add(this.labelDivider2);
-            this.panel4.Location = new System.Drawing.Point(0, 240);
+            this.panel4.Location = new System.Drawing.Point(0, 270);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(300, 30);
             this.panel4.TabIndex = 9;
@@ -312,11 +320,65 @@
             this.checkedListBoxSelectedCols.TabIndex = 0;
             this.checkedListBoxSelectedCols.Click += new System.EventHandler(this.checkedListBoxSelectedCols_Click);
             // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.checkBoxAutoEscape);
+            this.panel6.Controls.Add(this.labelAutoEscapeCheckbox);
+            this.panel6.Location = new System.Drawing.Point(0, 240);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(300, 30);
+            this.panel6.TabIndex = 11;
+            // 
+            // checkBoxAutoEscape
+            // 
+            this.checkBoxAutoEscape.AutoSize = true;
+            this.checkBoxAutoEscape.Location = new System.Drawing.Point(120, 7);
+            this.checkBoxAutoEscape.Name = "checkBoxAutoEscape";
+            this.checkBoxAutoEscape.Size = new System.Drawing.Size(15, 14);
+            this.checkBoxAutoEscape.TabIndex = 14;
+            this.checkBoxAutoEscape.UseVisualStyleBackColor = true;
+            // 
+            // labelAutoEscapeCheckbox
+            // 
+            this.labelAutoEscapeCheckbox.AutoSize = true;
+            this.labelAutoEscapeCheckbox.Location = new System.Drawing.Point(8, 8);
+            this.labelAutoEscapeCheckbox.Name = "labelAutoEscapeCheckbox";
+            this.labelAutoEscapeCheckbox.Size = new System.Drawing.Size(71, 13);
+            this.labelAutoEscapeCheckbox.TabIndex = 13;
+            this.labelAutoEscapeCheckbox.Text = "Auto Escape:";
+            // 
+            // panel10
+            // 
+            this.panel10.Controls.Add(this.textBoxDiagnosticField);
+            this.panel10.Controls.Add(this.labelDiagnosticField);
+            this.panel10.Location = new System.Drawing.Point(0, 390);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(300, 30);
+            this.panel10.TabIndex = 12;
+            // 
+            // textBoxDiagnosticField
+            // 
+            this.textBoxDiagnosticField.Location = new System.Drawing.Point(120, 4);
+            this.textBoxDiagnosticField.Name = "textBoxDiagnosticField";
+            this.textBoxDiagnosticField.Size = new System.Drawing.Size(170, 20);
+            this.textBoxDiagnosticField.TabIndex = 13;
+            // 
+            // labelDiagnosticField
+            // 
+            this.labelDiagnosticField.AutoSize = true;
+            this.labelDiagnosticField.Location = new System.Drawing.Point(8, 8);
+            this.labelDiagnosticField.Name = "labelDiagnosticField";
+            this.labelDiagnosticField.Size = new System.Drawing.Size(65, 13);
+            this.labelDiagnosticField.TabIndex = 0;
+            this.labelDiagnosticField.Text = "Diagnostics:";
+            // 
             // ProcessRunnerUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.panel10);
+            this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel9);
@@ -326,7 +388,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "ProcessRunnerUserControl";
-            this.Size = new System.Drawing.Size(330, 390);
+            this.Size = new System.Drawing.Size(330, 450);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -341,6 +403,10 @@
             this.panel4.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            this.panel10.ResumeLayout(false);
+            this.panel10.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -374,5 +440,11 @@
         private System.Windows.Forms.LinkLabel linkLabelNone;
         private System.Windows.Forms.LinkLabel linkLabelInvert;
         private System.Windows.Forms.LinkLabel linkLabelForget;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.CheckBox checkBoxAutoEscape;
+        private System.Windows.Forms.Label labelAutoEscapeCheckbox;
+        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.TextBox textBoxDiagnosticField;
+        private System.Windows.Forms.Label labelDiagnosticField;
     }
 }
