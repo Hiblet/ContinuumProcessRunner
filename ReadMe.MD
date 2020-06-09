@@ -93,8 +93,22 @@ The INI file should be copied to...
 ```    
     Alteryx\Settings\AdditionalPlugins    
 ```
+
+
+### All Installations: Check the INI file
     
-Finally, and crucially, you must edit the INI file and change the path to be correct for your installation.
+Finally, and crucially, you must check and possibly edit the INI file (in a text editor like Notepad) and change the path to be correct for your installation.
+
+If the DLL loads, but the INI file is incorrect, you should still be able to find the tool via the Search bar in Alteryx Designer.
+
+If the DLL file is in the wrong place, you will not be able to find the tool in the Alteryx Designer Search bar.
+
+
+### All Installations: Unblocking
+
+A DLL file is considered dangerous by Windows, if it does not originate on your own machine.  This means Windows blocks the DLL from being used, even if it is in the right folder.
+
+To manually unblock the DLL, find the DLL file using Windows FileExplorer, in the Alteryx\bin\Plugins\ContinuumProcessRunner folder that you copied it to in the step above.  Right-click the file and select Properties, and on the General tab (first tab) you should see, at the bottom, an Unblock option.  Click that to unblock the DLL.
 
 
 
